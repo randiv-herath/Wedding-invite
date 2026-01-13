@@ -80,10 +80,19 @@ h3 {
 
 .envelope-container {
     position: relative;
-    width: 500px;
-    height: 350px;
-    perspective: 1000px;
-    animation: float 3s ease-in-out infinite;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
+    max-height: 100vh;
+    display: block;
+    perspective: 1200px;
+    overflow: hidden;
+}
+
+.envelope-panel {
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 @keyframes float {
@@ -100,11 +109,29 @@ h3 {
 
 .envelope-back {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background: var(--beige);
+    background:
+        radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.8) 0, rgba(245, 230, 211, 1) 35%, rgba(232, 213, 196, 1) 100%);
     border: 2px solid var(--nude);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    overflow: hidden;
+}
+
+.envelope-back::before {
+    content: '';
+    position: absolute;
+    top: 26px;
+    left: 32px;
+    right: 32px;
+    bottom: 36px;
+    border-radius: 14px;
+    border: 1px solid rgba(212, 175, 55, 0.45);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(250, 243, 232, 0.05));
+    box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.35);
+    pointer-events: none;
 }
 
 .envelope-decoration {
@@ -117,7 +144,7 @@ h3 {
     position: absolute;
     font-size: 24px;
     color: var(--gold);
-    opacity: 0.3;
+    opacity: 0.4;
 }
 
 .corner-flourish.top-left {
@@ -145,7 +172,7 @@ h3 {
 
 .envelope-monogram {
     position: absolute;
-    top: 50%;
+    top: 54%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
@@ -185,32 +212,22 @@ h3 {
 }
 
 .envelope-front {
-    position: absolute;
-    width: 0;
-    height: 0;
-    bottom: 0;
-    left: 0;
-    border-left: 250px solid transparent;
-    border-right: 250px solid transparent;
-    border-bottom: 175px solid var(--nude);
-    z-index: 3;
-    transform-origin: bottom center;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Hide the small bottom flap in the new full-screen design */
+    display: none;
 }
 
 .envelope-front.open {
-    transform: rotateX(-180deg);
+    transform: none;
 }
 
 .envelope-flap {
     position: absolute;
-    width: 0;
-    height: 0;
+    width: 100%;
+    height: 52%;
     top: 0;
     left: 0;
-    border-left: 250px solid transparent;
-    border-right: 250px solid transparent;
-    border-top: 175px solid var(--beige);
+    background: var(--beige);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
     transform-origin: top center;
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 5;
@@ -288,47 +305,6 @@ h3 {
     color: var(--text-light);
     margin-top: 4px;
     font-style: italic;
-}
-
-.wax-seal {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100px;
-    height: 100px;
-    background: radial-gradient(circle at 35% 35%, #D4937C, var(--rose-gold) 45%, #8B4F5C);
-    border-radius: 50%;
-    z-index: 7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.4),
-        inset 0 2px 4px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
-    animation: pulse 2s ease-in-out infinite;
-    transition: all 0.6s ease-out;
-}
-
-.wax-seal.break {
-    animation: sealBreak 0.8s ease-out forwards;
-}
-
-@keyframes sealBreak {
-    0% {
-        transform: translate(-50%, -50%) scale(1) rotate(0deg);
-        opacity: 1;
-    }
-
-    50% {
-        transform: translate(-50%, -50%) scale(1.1) rotate(5deg);
-    }
-
-    100% {
-        transform: translate(-50%, -50%) scale(0.3) rotate(15deg);
-        opacity: 0;
-    }
 }
 
 @keyframes pulse {
@@ -1367,9 +1343,23 @@ h3 {
 /* ==================== RESPONSIVE DESIGN ==================== */
 @media (max-width: 768px) {
     .envelope-container {
-        width: 300px;
-        height: 210px;
+        width: 100vw;
+        height: 100vh;
     }
+
+    .monogram-circle {
+        width: 95px;
+        height: 95px;
+    }
+
+    .monogram-text {
+        font-size: 26px;
+    }
+
+    .corner-flourish {
+        font-size: 20px;
+    }
+
 
     .envelope-front,
     .envelope-flap {
@@ -1482,22 +1472,21 @@ h3 {
 
 @media (max-width: 480px) {
     .envelope-container {
-        width: 250px;
-        height: 175px;
+        width: 100vw;
+        height: 100vh;
     }
 
-    .envelope-front,
-    .envelope-flap {
-        border-left-width: 125px;
-        border-right-width: 125px;
+    .monogram-circle {
+        width: 80px;
+        height: 80px;
     }
 
-    .envelope-front {
-        border-bottom-width: 87.5px;
+    .monogram-text {
+        font-size: 22px;
     }
 
-    .envelope-flap {
-        border-top-width: 87.5px;
+    .corner-flourish {
+        font-size: 16px;
     }
 
     .letter-content {

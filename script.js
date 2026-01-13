@@ -5,7 +5,6 @@ let canCloseEnvelope = false;
 
 const envelopeWrapper = document.getElementById('envelopeWrapper');
 const flap = document.getElementById('flap');
-const letter = document.getElementById('letter');
 const envelopeFront = document.querySelector('.envelope-front');
 
 // Touch and scroll handling for envelope opening
@@ -22,7 +21,8 @@ envelopeWrapper.addEventListener('touchmove', (e) => {
 });
 
 envelopeWrapper.addEventListener('wheel', (e) => {
-    if (!isEnvelopeOpened && e.deltaY < 0) {
+    // Scroll down to open the envelope
+    if (!isEnvelopeOpened && e.deltaY > 0) {
         openEnvelope();
     }
 });
