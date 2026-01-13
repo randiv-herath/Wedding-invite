@@ -232,7 +232,7 @@ h3 {
 }
 
 .letter-content {
-    padding: 35px 25px;
+    padding: 28px 22px;
     text-align: center;
     height: 100%;
     display: flex;
@@ -241,44 +241,44 @@ h3 {
 }
 
 .letter-header h1 {
-    font-size: 44px;
-    margin-bottom: 8px;
+    font-size: 40px;
+    margin-bottom: 6px;
     letter-spacing: 2px;
 }
 
 .decorative-line {
-    width: 100px;
+    width: 90px;
     height: 2px;
     background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin: 10px auto;
+    margin: 6px auto 8px;
 }
 
 .letter-text {
     font-size: 12px;
     color: var(--text-light);
-    margin: 10px 0;
+    margin: 6px 0;
     letter-spacing: 1px;
 }
 
 .names {
-    font-size: 34px;
+    font-size: 30px;
     color: var(--text-dark);
     font-weight: 600;
-    margin: 8px 0;
+    margin: 6px 0;
     letter-spacing: 2px;
 }
 
 .letter-date {
-    font-size: 14px;
+    font-size: 13px;
     color: var(--gold);
-    margin-top: 10px;
+    margin-top: 6px;
     font-weight: 500;
 }
 
 .letter-venue {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-light);
-    margin-top: 6px;
+    margin-top: 4px;
     font-style: italic;
 }
 
