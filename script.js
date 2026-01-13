@@ -157,28 +157,65 @@ setInterval(updateCountdown, 1000);
 updateCountdown();
 
 // ==================== RSVP FORM HANDLING ====================
-// ==================== RSVP FORM HANDLING ====================
-// Initialize EmailJS
-emailjs.init('XFYsAHq7VkAYVs0rY'); // Public Key
-
 const rsvpForm = document.getElementById('rsvpForm');
 
-rsvpForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+if (rsvpForm) {
+    rsvpForm.addEventListener('submit', (e) => {
+        e.preventDefault();
 
-    // Show loading state
-    const submitBtn = rsvpForm.querySelector('.submit-btn');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
+        // Show loading state
+        const submitBtn = rsvpForm.querySelector('.submit-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.disabled = true;
 
-    // Send email using EmailJS
-    emailjs.sendForm('service_w5t1ovr', 'template_4kv25hj', rsvpForm)
-        .then(() => {
-            // Create a beautiful success message
+        // If EmailJS is available, send an email
+        if (window.emailjs) {
+            try {
+                emailjs.init('XFYsAHq7VkAYVs0rY'); // Public Key
+
+                emailjs.sendForm('service_w5t1ovr', 'template_4kv25hj', rsvpForm)
+                    .then(() => {
+                        const formContainer = document.querySelector('.rsvp-form-container');
+
+                        // Animate form out
+                        rsvpForm.style.transform = 'scale(0.95)';
+                        rsvpForm.style.opacity = '0';
+
+                        setTimeout(() => {
+                            formContainer.innerHTML = `
+                                <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                                    <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                                    <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                                    <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                                        We've received your RSVP and can't wait to celebrate with you!<br>
+                                        We'll be in touch soon.
+                                    </p>
+                                    <div style="margin-top: 30px;">
+                                        <span style="font-size: 48px;">💕</span>
+                                    </div>
+                                </div>
+                            `;
+
+                            // Trigger confetti
+                            createConfetti();
+                        }, 300);
+                    })
+                    .catch((error) => {
+                        console.error('EmailJS Error:', error);
+                        alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    });
+            } catch (error) {
+                console.error('EmailJS not available:', error);
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        } else {
+            // Fallback: just show the success message without sending email
             const formContainer = document.querySelector('.rsvp-form-container');
 
-            // Animate form out
             rsvpForm.style.transform = 'scale(0.95)';
             rsvpForm.style.opacity = '0';
 
@@ -189,7 +226,7 @@ rsvpForm.addEventListener('submit', (e) => {
                         <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
                         <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
                             We've received your RSVP and can't wait to celebrate with you!<br>
-                            We'll be in touch soon.
+                            (Email sending is not configured yet.)
                         </p>
                         <div style="margin-top: 30px;">
                             <span style="font-size: 48px;">💕</span>
@@ -197,17 +234,11 @@ rsvpForm.addEventListener('submit', (e) => {
                     </div>
                 `;
 
-                // Trigger confetti
                 createConfetti();
             }, 300);
-        })
-        .catch((error) => {
-            console.error('EmailJS Error:', error);
-            alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
-            submitBtn.textContent = originalText;
-            submitBtn.disabled = false;
-        });
-});
+        }
+    });
+}
 
 // ==================== SMOOTH SCROLLING ====================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -305,9 +336,21 @@ document.addEventListener('mousemove', (e) => {
 // ==================== RESPONSIVE NAVIGATION FOR MOBILE ====================
 let lastScrollTop = 0;
 window.addEventListener('scroll', () => {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-    // Check if user scrolled back to top to close envelope
+    // If user reaches the very top, always show the closed envelope again
+    if (scrollTop <= 0) {
+        envelopeWrapper.classList.remove('opened');
+        document.body.style.overflow = 'hidden';
+        flap.classList.remove('open');
+        envelopeFront.classList.remove('open');
+        isEnvelopeOpened = false;
+        canCloseEnvelope = false;
+        lastScrollTop = scrollTop;
+        return;
+    }
+
+    // Check if user scrolled back near the top to close envelope with animation
     if (scrollTop < 100 && canCloseEnvelope && isEnvelopeOpened) {
         closeEnvelope();
     }
