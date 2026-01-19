@@ -159,6 +159,33 @@ updateCountdown();
 // ==================== RSVP FORM HANDLING ====================
 const rsvpForm = document.getElementById('rsvpForm');
 
+// Prefill RSVP form from URL query parameters (e.g. ?name=Chanula&guest=5)
+function prefillRsvpFromUrl() {
+    if (!rsvpForm) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const nameFromUrl = params.get('name');
+    const guestCountFromUrl = params.get('guest');
+
+    const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
+    const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
+
+    if (nameFromUrl && nameInput) {
+        nameInput.value = nameFromUrl;
+        nameInput.readOnly = true;
+    }
+
+    if (guestCountFromUrl && guestCountInput) {
+        const parsedGuestCount = parseInt(guestCountFromUrl, 10);
+        if (!Number.isNaN(parsedGuestCount)) {
+            guestCountInput.value = String(parsedGuestCount);
+            guestCountInput.readOnly = true;
+        }
+    }
+}
+
+prefillRsvpFromUrl();
+
 if (rsvpForm) {
     rsvpForm.addEventListener('submit', (e) => {
         e.preventDefault();
