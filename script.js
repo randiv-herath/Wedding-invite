@@ -485,7 +485,7 @@ function updateCarousel(instant = false) {
 
     const firstItem = items[0];
     const itemWidth = firstItem.offsetWidth;
-    const gap = window.innerWidth <= 480 ? 0 : (window.innerWidth <= 768 ? 15 : 20);
+    const gap = window.innerWidth <= 480 ? 15 : (window.innerWidth <= 768 ? 15 : 20);
     const offset = currentSlide * imagesPerSlide * (itemWidth + gap);
 
     if (instant) {
