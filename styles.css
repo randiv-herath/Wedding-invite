@@ -2272,8 +2272,17 @@ h3 {
         max-width: 200px;
     }
 
+    .gallery-carousel {
+        padding: 0 10px;
+    }
+
+    .gallery-track {
+        gap: 0;
+    }
+
     .gallery-item {
         flex: 0 0 100%;
+        margin: 0;
     }
 
     .gallery-nav {
