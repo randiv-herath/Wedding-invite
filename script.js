@@ -125,6 +125,13 @@ function openEnvelope() {
     if (isEnvelopeOpened) return;
     isEnvelopeOpened = true;
 
+    const mainContent = document.getElementById('mainContent');
+    const invitationCard = document.querySelector('.invitation-card');
+
+    // Make main content visible but keep it hidden initially
+    mainContent.style.display = 'block';
+    mainContent.style.opacity = '0';
+
     // Hide scroll indicator
     gsap.to(scrollIndicator, {
         duration: 0.3,
@@ -137,70 +144,90 @@ function openEnvelope() {
         flap.classList.add('open');
 
         gsap.to(flap, {
-            duration: 1.8,
+            duration: 1,
             rotationX: -180,
             transformOrigin: "top center",
-            ease: "power1.inOut",
-            force3D: true,
-            onComplete: () => {
-                // Only show letter after flap is fully open
-                gsap.to(letter, {
-                    duration: 0.8,
-                    opacity: 1,
-                    y: -50,
-                    scale: 1.05,
-                    ease: "power2.out"
-                });
-            }
+            ease: "power2.inOut",
+            force3D: true
         });
-    }, 300);
+    }, 200);
 
     // Create sparkle burst as envelope opens
     setTimeout(() => {
         createSparkles(30);
-    }, 1200);
+    }, 800);
 
-    // Zoom and expand the letter to fill screen (becomes the page)
+    // Animate the actual invitation card to appear from envelope position
     setTimeout(() => {
-        // Animate letter to expand and fill viewport
-        gsap.to(letter, {
-            duration: 1.2,
-            scale: 20,
-            y: 0,
+        // Position the invitation card at envelope location
+        const envelopeRect = envelopeContainer.getBoundingClientRect();
+
+        gsap.set(invitationCard, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            xPercent: -50,
+            yPercent: -50,
+            width: '540px',
+            scale: 0.7,
             opacity: 1,
-            ease: "power2.inOut"
+            zIndex: 9999
         });
 
-        // Fade out the entire envelope wrapper
-        gsap.to(envelopeWrapper, {
+        // Animate card emerging and growing
+        gsap.to(invitationCard, {
             duration: 1.2,
+            scale: 1,
+            ease: "power2.out"
+        });
+
+        // Fade out envelope wrapper
+        gsap.to(envelopeWrapper, {
+            duration: 0.8,
             opacity: 0,
+            delay: 0.8,
             ease: "power2.inOut",
             onComplete: () => {
-                envelopeWrapper.classList.add('opened');
                 envelopeWrapper.style.display = 'none';
-                document.body.style.overflow = 'auto';
 
-                // Smooth scroll to show hero section
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'auto'
+                // Reset invitation card to normal position
+                gsap.to(invitationCard, {
+                    duration: 0.6,
+                    position: 'relative',
+                    top: 'auto',
+                    left: 'auto',
+                    xPercent: 0,
+                    yPercent: 0,
+                    width: '',
+                    clearProps: 'all',
+                    ease: "power2.inOut",
+                    onComplete: () => {
+                        // Show full page content
+                        document.body.style.overflow = 'auto';
+
+                        // Scroll to the invitation card section
+                        const invitationSection = document.querySelector('.formal-invitation-section');
+                        if (invitationSection) {
+                            window.scrollTo({
+                                top: 0,
+                                behavior: 'smooth'
+                            });
+                        }
+
+                        gsap.to(mainContent, {
+                            duration: 0.5,
+                            opacity: 1,
+                            ease: "power2.out"
+                        });
+
+                        setTimeout(() => {
+                            canCloseEnvelope = true;
+                        }, 300);
+                    }
                 });
-
-                // Fade in main content
-                const mainContent = document.getElementById('mainContent');
-                gsap.from(mainContent, {
-                    duration: 1,
-                    opacity: 0,
-                    ease: "power2.out"
-                });
-
-                setTimeout(() => {
-                    canCloseEnvelope = true;
-                }, 500);
             }
         });
-    }, 2400);
+    }, 1400);
 }
 
 // ==================== SPARKLE EFFECTS ====================
