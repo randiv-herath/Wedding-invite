@@ -159,7 +159,7 @@ updateCountdown();
 // ==================== RSVP FORM HANDLING ====================
 const rsvpForm = document.getElementById('rsvpForm');
 
-// Prefill RSVP form from URL query parameters (e.g. ?name=Chanula&guest=5)
+// Prefill RSVP form from URL query parameters (e.g. ?name=Theeksha%20Gunasingha&guest=1)
 function prefillRsvpFromUrl() {
     if (!rsvpForm) return;
 
