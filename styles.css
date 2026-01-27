@@ -1777,54 +1777,219 @@ h3 {
 }
 
 /* ==================== RESPONSIVE DESIGN ==================== */
+
+/* Medium screens (tablets in portrait) */
+@media (max-width: 1024px) {
+    .invitation-card {
+        max-width: 700px;
+        padding: 50px 40px;
+    }
+
+    .invitation-couple {
+        font-size: 48px;
+    }
+
+    .invitation-parents {
+        font-size: 15px;
+    }
+
+    .event-title,
+    .event-venue {
+        font-size: 14px;
+    }
+}
+
+/* Tablets and small screens */
 @media (max-width: 768px) {
+
+    /* Envelope Responsiveness */
     .envelope-container {
-        width: 100vw;
-        height: 100vh;
+        width: 90vw;
+        max-width: 450px;
+        height: 300px;
     }
 
-    .monogram-circle {
-        width: 95px;
-        height: 95px;
+    .envelope-container:hover {
+        transform: translateY(-5px) scale(1.01);
     }
 
-    .monogram-text {
-        font-size: 26px;
+    .envelope-letter {
+        width: 92%;
+        height: 87%;
+    }
+
+    .letter-content {
+        width: 90%;
+    }
+
+    .letter-save-date {
+        font-size: 6px;
+        margin-bottom: 6px;
+    }
+
+    .letter-bride,
+    .letter-groom {
+        font-size: 16px;
+    }
+
+    .letter-ampersand {
+        font-size: 13px;
+    }
+
+    .letter-date {
+        font-size: 8px;
+    }
+
+    .scroll-indicator {
+        bottom: 40px;
+    }
+
+    .scroll-indicator p {
+        font-size: 11px;
+        letter-spacing: 2px;
+    }
+
+    .indicator-icon {
+        font-size: 24px;
+    }
+
+    .indicator-arrow {
+        font-size: 18px;
     }
 
     .corner-flourish {
-        font-size: 20px;
+        width: 40px;
+        height: 40px;
     }
 
-
-    .envelope-front,
-    .envelope-flap {
-        border-left-width: 150px;
-        border-right-width: 150px;
+    .corner-flourish.top-left::before,
+    .corner-flourish.top-right::before,
+    .corner-flourish.bottom-left::before,
+    .corner-flourish.bottom-right::before {
+        width: 20px;
     }
 
-    .envelope-front {
-        border-bottom-width: 105px;
+    .corner-flourish.top-left::after,
+    .corner-flourish.top-right::after,
+    .corner-flourish.bottom-left::after,
+    .corner-flourish.bottom-right::after {
+        height: 20px;
     }
 
-    .envelope-flap {
-        border-top-width: 105px;
+    /* Invitation Card Responsiveness */
+    .invitation-card {
+        padding: 40px 25px;
+        margin: 0 15px;
     }
 
-    .letter-header h1 {
-        font-size: 30px;
+    .invitation-card::before {
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
     }
 
-    .names {
-        font-size: 22px;
+    .corner-flourish-card {
+        width: 40px;
+        height: 40px;
     }
 
-    .letter-text,
-    .letter-date,
-    .letter-venue {
+    .corner-flourish-card.top-left::before,
+    .corner-flourish-card.top-right::before,
+    .corner-flourish-card.bottom-left::before,
+    .corner-flourish-card.bottom-right::before {
+        width: 20px;
+    }
+
+    .corner-flourish-card.top-left::after,
+    .corner-flourish-card.top-right::after,
+    .corner-flourish-card.bottom-left::after,
+    .corner-flourish-card.bottom-right::after {
+        height: 20px;
+    }
+
+    .monogram-text-card {
+        font-size: 32px;
+    }
+
+    .invitation-parents {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .invitation-together {
         font-size: 11px;
+        margin-bottom: 12px;
     }
 
+    .invitation-request {
+        font-size: 12px;
+        margin-bottom: 20px;
+    }
+
+    .invitation-celebrate {
+        font-size: 11px;
+        margin-bottom: 12px;
+    }
+
+    .invitation-couple {
+        font-size: 40px;
+        margin: 12px 0;
+    }
+
+    .invitation-to {
+        font-size: 28px;
+        margin: 8px 0;
+    }
+
+    .invitation-date {
+        font-size: 13px;
+        margin: 20px 0;
+    }
+
+    .invitation-events {
+        flex-direction: column;
+        gap: 25px;
+        margin: 25px 0;
+    }
+
+    .invitation-event-divider {
+        width: 60px;
+        height: 2px;
+        margin: 0 auto;
+    }
+
+    .event-title {
+        font-size: 13px;
+        margin-bottom: 6px;
+    }
+
+    .event-time {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+
+    .event-venue {
+        font-size: 13px;
+        margin-bottom: 3px;
+    }
+
+    .event-address {
+        font-size: 12px;
+    }
+
+    .invitation-rsvp {
+        font-size: 11px;
+        margin-top: 25px;
+        margin-bottom: 8px;
+    }
+
+    .invitation-contact {
+        font-size: 12px;
+        margin: 4px 0;
+    }
+
+    /* Other elements */
     .couple-names {
         font-size: 48px;
         flex-direction: column;
@@ -1887,64 +2052,206 @@ h3 {
     .rsvp-form-container {
         padding: 30px 20px;
     }
+}
 
+@media (max-width: 480px) {
+
+    /* Envelope Responsiveness - Mobile */
+    .envelope-container {
+        width: 95vw;
+        max-width: 320px;
+        height: 220px;
+    }
+
+    .envelope-container:hover {
+        transform: translateY(-3px) scale(1.01);
+    }
+
+    .envelope-letter {
+        width: 94%;
+        height: 88%;
+    }
+
+    .letter-content {
+        width: 92%;
+    }
+
+    .letter-save-date {
+        font-size: 5px;
+        margin-bottom: 4px;
+        letter-spacing: 1px;
+    }
+
+    .letter-bride,
+    .letter-groom {
+        font-size: 13px;
+    }
+
+    .letter-ampersand {
+        font-size: 11px;
+    }
+
+    .letter-date {
+        font-size: 7px;
+    }
+
+    .scroll-indicator {
+        bottom: 30px;
+    }
+
+    .scroll-indicator p {
+        font-size: 9px;
+        letter-spacing: 1.5px;
+    }
+
+    .indicator-icon {
+        font-size: 20px;
+        margin-bottom: 5px;
+    }
+
+    .indicator-arrow {
+        font-size: 16px;
+    }
+
+    .corner-flourish {
+        width: 30px;
+        height: 30px;
+    }
+
+    .corner-flourish.top-left::before,
+    .corner-flourish.top-right::before,
+    .corner-flourish.bottom-left::before,
+    .corner-flourish.bottom-right::before {
+        width: 15px;
+    }
+
+    .corner-flourish.top-left::after,
+    .corner-flourish.top-right::after,
+    .corner-flourish.bottom-left::after,
+    .corner-flourish.bottom-right::after {
+        height: 15px;
+    }
+
+    /* Invitation Card Responsiveness - Mobile */
     .invitation-card {
-        padding: 40px 20px;
+        padding: 30px 15px;
+        margin: 0 10px;
+    }
+
+    .invitation-card::before {
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        bottom: 10px;
+    }
+
+    .corner-flourish-card {
+        width: 30px;
+        height: 30px;
+    }
+
+    .corner-flourish-card.top-left::before,
+    .corner-flourish-card.top-right::before,
+    .corner-flourish-card.bottom-left::before,
+    .corner-flourish-card.bottom-right::before {
+        width: 15px;
+    }
+
+    .corner-flourish-card.top-left::after,
+    .corner-flourish-card.top-right::after,
+    .corner-flourish-card.bottom-left::after,
+    .corner-flourish-card.bottom-right::after {
+        height: 15px;
+    }
+
+    .monogram-text-card {
+        font-size: 26px;
+    }
+
+    .invitation-parents {
+        font-size: 12px;
+        margin-bottom: 6px;
+    }
+
+    .invitation-together {
+        font-size: 9px;
+        margin-bottom: 10px;
+    }
+
+    .invitation-request {
+        font-size: 10px;
+        margin-bottom: 15px;
+    }
+
+    .invitation-celebrate {
+        font-size: 9px;
+        margin-bottom: 10px;
     }
 
     .invitation-couple {
-        font-size: 42px;
+        font-size: 32px;
+        margin: 10px 0;
+    }
+
+    .invitation-to {
+        font-size: 22px;
+        margin: 6px 0;
+    }
+
+    .invitation-date {
+        font-size: 11px;
+        margin: 15px 0;
     }
 
     .invitation-events {
         flex-direction: column;
-        gap: 30px;
+        gap: 20px;
+        margin: 20px 0;
     }
 
     .invitation-event-divider {
-        transform: rotate(90deg);
-    }
-}
-
-@media (max-width: 480px) {
-    .envelope-container {
-        width: 100vw;
-        height: 100vh;
+        width: 50px;
+        height: 2px;
+        margin: 0 auto;
     }
 
-    .monogram-circle {
-        width: 80px;
-        height: 80px;
+    .event-title {
+        font-size: 11px;
+        margin-bottom: 5px;
     }
 
-    .monogram-text {
-        font-size: 22px;
+    .event-time {
+        font-size: 10px;
+        margin-bottom: 6px;
     }
 
-    .corner-flourish {
-        font-size: 16px;
+    .event-venue {
+        font-size: 11px;
+        margin-bottom: 2px;
     }
 
-    .letter-content {
-        padding: 26px 18px;
-    }
-
-    .letter-header h1 {
-        font-size: 24px;
-    }
-
-    .names {
-        font-size: 20px;
-    }
-
-    .letter-text,
-    .letter-date,
-    .letter-venue {
+    .event-address {
         font-size: 10px;
     }
 
+    .invitation-rsvp {
+        font-size: 9px;
+        margin-top: 20px;
+        margin-bottom: 6px;
+    }
+
+    .invitation-contact {
+        font-size: 10px;
+        margin: 3px 0;
+    }
+
+    /* Other elements - Mobile */
     .couple-names {
         font-size: 36px;
+    }
+
+    .ampersand {
+        font-size: 28px;
     }
 
     .section-title {
@@ -1959,6 +2266,10 @@ h3 {
     .time-unit {
         width: 100%;
         max-width: 200px;
+    }
+
+    .gallery-grid {
+        grid-template-columns: 1fr;
     }
 }
 
