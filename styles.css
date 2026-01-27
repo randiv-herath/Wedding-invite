@@ -2015,6 +2015,14 @@ h3 {
         grid-template-columns: 1fr;
     }
 
+    .gallery-track {
+        gap: 15px;
+    }
+
+    .gallery-item {
+        flex: 0 0 calc(50% - 7.5px);
+    }
+
     .countdown-timer {
         gap: 20px;
     }
@@ -2273,11 +2281,11 @@ h3 {
     }
 
     .gallery-carousel {
-        padding: 0 10px;
+        padding: 0 15px;
     }
 
     .gallery-track {
-        gap: 0;
+        gap: 15px;
     }
 
     .gallery-item {
