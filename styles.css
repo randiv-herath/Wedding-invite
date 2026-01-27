@@ -1195,6 +1195,12 @@ h3 {
     margin: 0 auto;
 }
 
+.detail-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .detail-card {
     background: var(--white);
     padding: 50px 30px;
@@ -1205,6 +1211,7 @@ h3 {
     opacity: 0;
     transform: translateY(30px);
     border: 1px solid var(--soft-gray);
+    cursor: pointer;
 }
 
 .detail-card.visible {
@@ -1212,10 +1219,20 @@ h3 {
     transform: translateY(0);
 }
 
+.detail-card-link:hover .detail-card,
+.detail-card-link:focus .detail-card,
 .detail-card:hover {
     transform: translateY(-10px);
     box-shadow: 0 15px 40px rgba(212, 175, 55, 0.2);
     border-color: var(--gold);
+}
+
+.detail-map-hint {
+    font-size: 13px;
+    color: var(--gold);
+    margin-top: 10px;
+    font-weight: 600;
+    opacity: 0.8;
 }
 
 .detail-icon {
@@ -2277,16 +2294,18 @@ h3 {
     .gallery-carousel {
         padding: 0;
         overflow: hidden;
+        margin: 0 -20px;
     }
 
     .gallery-track {
         gap: 0;
+        padding: 0 20px;
     }
 
     .gallery-item {
-        flex: 0 0 100%;
+        flex: 0 0 calc(100% - 40px);
         margin: 0;
-        padding: 0 15px;
+        flex-shrink: 0;
     }
 
     .gallery-nav {
