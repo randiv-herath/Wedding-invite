@@ -485,8 +485,21 @@ function updateCarousel(instant = false) {
 
     const firstItem = items[0];
     const itemWidth = firstItem.offsetWidth;
-    const gap = window.innerWidth <= 480 ? 15 : (window.innerWidth <= 768 ? 15 : 20);
-    const offset = currentSlide * imagesPerSlide * (itemWidth + gap);
+
+    // On mobile, use viewport width directly for precise scrolling
+    let gap, slideWidth;
+    if (window.innerWidth <= 480) {
+        slideWidth = window.innerWidth;
+        gap = 0;
+    } else if (window.innerWidth <= 768) {
+        slideWidth = itemWidth;
+        gap = 15;
+    } else {
+        slideWidth = itemWidth;
+        gap = 20;
+    }
+
+    const offset = currentSlide * imagesPerSlide * (slideWidth + gap);
 
     if (instant) {
         track.style.transition = 'none';
