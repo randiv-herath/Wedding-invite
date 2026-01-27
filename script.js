@@ -1,99 +1,280 @@
-// ==================== ENVELOPE ANIMATION ====================
+// ==================== ENVELOPE ANIMATION WITH GSAP ====================
 let scrollProgress = 0;
 let isEnvelopeOpened = false;
 let canCloseEnvelope = false;
 
 const envelopeWrapper = document.getElementById('envelopeWrapper');
+const envelopeContainer = document.getElementById('envelopeContainer');
 const flap = document.getElementById('flap');
-const envelopeFront = document.querySelector('.envelope-front');
+const letter = document.getElementById('letter');
+const waxSeal = document.getElementById('waxSeal');
+const scrollIndicator = document.getElementById('scrollIndicator');
 
-// Touch and scroll handling for envelope opening
-let touchStartY = 0;
-let touchEndY = 0;
+// ==================== PARTICLE SYSTEM ====================
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
 
-envelopeWrapper.addEventListener('touchstart', (e) => {
-    touchStartY = e.touches[0].clientY;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+class Particle {
+    constructor() {
+        this.reset();
+    }
+
+    reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = Math.random() * 0.5 + 0.2;
+        this.opacity = Math.random() * 0.5 + 0.2;
+        this.color = ['#D4AF37', '#F0E68C', '#B76E79', '#FFF8F0'][Math.floor(Math.random() * 4)];
+    }
+
+    update() {
+        this.x += this.speedX;
+        this.y -= this.speedY;
+
+        if (this.y < 0 || this.x < 0 || this.x > canvas.width) {
+            this.reset();
+            this.y = canvas.height;
+        }
+    }
+
+    draw() {
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+    }
+}
+
+const particles = [];
+for (let i = 0; i < 80; i++) {
+    particles.push(new Particle());
+}
+
+function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+    });
+    requestAnimationFrame(animateParticles);
+}
+
+animateParticles();
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 });
 
-envelopeWrapper.addEventListener('touchmove', (e) => {
-    touchEndY = e.touches[0].clientY;
-    handleSwipe();
+// ==================== GSAP ENTRANCE ANIMATION ====================
+gsap.from(envelopeContainer, {
+    duration: 1.5,
+    scale: 0.5,
+    opacity: 0,
+    rotationY: -180,
+    ease: "back.out(1.7)",
+    delay: 0.3
 });
 
+gsap.from(scrollIndicator, {
+    duration: 1,
+    opacity: 0,
+    y: 50,
+    ease: "power2.out",
+    delay: 1.5
+});
+
+// ==================== INTERACTIVE HOVER EFFECTS ====================
+envelopeContainer.addEventListener('mousemove', (e) => {
+    const rect = envelopeContainer.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = (y - centerY) / 20;
+    const rotateY = (centerX - x) / 20;
+
+    gsap.to(envelopeContainer, {
+        duration: 0.3,
+        rotationX: rotateX,
+        rotationY: rotateY,
+        ease: "power2.out"
+    });
+});
+
+envelopeContainer.addEventListener('mouseleave', () => {
+    gsap.to(envelopeContainer, {
+        duration: 0.5,
+        rotationX: 0,
+        rotationY: 0,
+        ease: "power2.out"
+    });
+});
+
+// ==================== OPENING ANIMATION ====================
+function openEnvelope() {
+    if (isEnvelopeOpened) return;
+    isEnvelopeOpened = true;
+
+    // Hide scroll indicator
+    gsap.to(scrollIndicator, {
+        duration: 0.3,
+        opacity: 0,
+        y: 20
+    });
+
+    // Open flap with elegant animation
+    setTimeout(() => {
+        flap.classList.add('open');
+
+        gsap.to(flap, {
+            duration: 1.8,
+            rotationX: -180,
+            transformOrigin: "top center",
+            ease: "power1.inOut",
+            force3D: true,
+            onComplete: () => {
+                // Only show letter after flap is fully open
+                gsap.to(letter, {
+                    duration: 0.8,
+                    opacity: 1,
+                    y: -50,
+                    scale: 1.05,
+                    ease: "power2.out"
+                });
+            }
+        });
+    }, 300);
+
+    // Create sparkle burst as envelope opens
+    setTimeout(() => {
+        createSparkles(30);
+    }, 1200);
+
+    // Zoom and expand the letter to fill screen (becomes the page)
+    setTimeout(() => {
+        // Animate letter to expand and fill viewport
+        gsap.to(letter, {
+            duration: 1.2,
+            scale: 20,
+            y: 0,
+            opacity: 1,
+            ease: "power2.inOut"
+        });
+
+        // Fade out the entire envelope wrapper
+        gsap.to(envelopeWrapper, {
+            duration: 1.2,
+            opacity: 0,
+            ease: "power2.inOut",
+            onComplete: () => {
+                envelopeWrapper.classList.add('opened');
+                envelopeWrapper.style.display = 'none';
+                document.body.style.overflow = 'auto';
+
+                // Smooth scroll to show hero section
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'auto'
+                });
+
+                // Fade in main content
+                const mainContent = document.getElementById('mainContent');
+                gsap.from(mainContent, {
+                    duration: 1,
+                    opacity: 0,
+                    ease: "power2.out"
+                });
+
+                setTimeout(() => {
+                    canCloseEnvelope = true;
+                }, 500);
+            }
+        });
+    }, 2400);
+}
+
+// ==================== SPARKLE EFFECTS ====================
+function createSparkles(count) {
+    const colors = ['#D4AF37', '#F0E68C', '#FFD700'];
+
+    for (let i = 0; i < count; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle-burst';
+        sparkle.style.cssText = `
+            position: fixed;
+            width: ${Math.random() * 8 + 4}px;
+            height: ${Math.random() * 8 + 4}px;
+            background: ${colors[Math.floor(Math.random() * colors.length)]};
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            left: 50%;
+            top: 50%;
+            box-shadow: 0 0 10px currentColor;
+        `;
+
+        document.body.appendChild(sparkle);
+
+        const angle = (Math.PI * 2 * i) / count;
+        const velocity = Math.random() * 300 + 200;
+
+        gsap.to(sparkle, {
+            duration: Math.random() * 1 + 0.8,
+            x: Math.cos(angle) * velocity,
+            y: Math.sin(angle) * velocity,
+            opacity: 0,
+            scale: 0,
+            ease: "power2.out",
+            onComplete: () => sparkle.remove()
+        });
+    }
+}
+
+// ==================== EVENT LISTENERS ====================
 envelopeWrapper.addEventListener('wheel', (e) => {
-    // Scroll down to open the envelope
     if (!isEnvelopeOpened && e.deltaY > 0) {
         openEnvelope();
     }
 });
 
-envelopeWrapper.addEventListener('click', () => {
+envelopeContainer.addEventListener('click', () => {
     if (!isEnvelopeOpened) {
-        openEnvelope();
+        // Pulse animation before opening
+        gsap.to(envelopeContainer, {
+            duration: 0.2,
+            scale: 1.05,
+            yoyo: true,
+            repeat: 1,
+            ease: "power2.inOut",
+            onComplete: openEnvelope
+        });
     }
 });
 
-function handleSwipe() {
+// Touch handling
+let touchStartY = 0;
+envelopeWrapper.addEventListener('touchstart', (e) => {
+    touchStartY = e.touches[0].clientY;
+});
+
+envelopeWrapper.addEventListener('touchmove', (e) => {
+    const touchEndY = e.touches[0].clientY;
     const swipeDistance = touchStartY - touchEndY;
 
     if (swipeDistance > 50 && !isEnvelopeOpened) {
         openEnvelope();
     }
-}
-
-function openEnvelope() {
-    isEnvelopeOpened = true;
-
-    // Animate both flaps opening
-    setTimeout(() => {
-        flap.classList.add('open');
-        envelopeFront.classList.add('open');
-    }, 200);
-
-    // Hide entire envelope wrapper
-    setTimeout(() => {
-        envelopeWrapper.classList.add('opened');
-    }, 1200);
-
-    // Enable scroll on body and scroll to main content
-    setTimeout(() => {
-        document.body.style.overflow = 'auto';
-        // Smooth scroll to the main content
-        window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-        });
-        // Allow envelope to be closed after a short delay
-        setTimeout(() => {
-            canCloseEnvelope = true;
-        }, 1000);
-    }, 2000);
-}
-
-function closeEnvelope() {
-    if (!canCloseEnvelope || !isEnvelopeOpened) return;
-
-    isEnvelopeOpened = false;
-    canCloseEnvelope = false;
-
-    // Show envelope wrapper
-    envelopeWrapper.classList.remove('opened');
-
-    // Disable body scroll
-    document.body.style.overflow = 'hidden';
-
-    // Reverse animations
-    setTimeout(() => {
-        flap.classList.remove('open');
-        envelopeFront.classList.remove('open');
-    }, 200);
-
-    // Scroll to top
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
+});
 
 // ==================== SCROLL ANIMATIONS ====================
 const observerOptions = {
@@ -129,6 +310,108 @@ document.querySelectorAll('.gallery-item').forEach((el, index) => {
     el.style.transitionDelay = `${index * 0.1}s`;
     fadeInObserver.observe(el);
 });
+
+// ==================== GALLERY IMAGE ROTATION ====================
+const galleryImages = [
+    'images/20250803_171325_496.JPG',
+    'images/8297550b-ec52-4143-9cb9-804ac491417b.JPG',
+    'images/88c3b0f9-37ef-4180-b4c7-0f19d606930f.JPG',
+    'images/9ec63b3b-97f6-48a9-a98a-e2b5c0c1805a.JPG',
+    'images/fqs 2025-10-25 192141.725.JPG',
+    'images/fqs 2025-10-25 204651.064.JPG',
+    'images/fqs 2026-01-18 122520.258.JPG',
+    'images/IMG_0876.JPG',
+    'images/IMG_0945.JPG',
+    'images/IMG_1092.JPG',
+    'images/IMG_1105.JPG',
+    'images/IMG_4540.JPG',
+    'images/IMG_4848.JPG',
+    'images/IMG_5044.JPG',
+    'images/IMG_5928.JPG',
+    'images/IMG_9461.JPG'
+];
+
+let usedImages = new Set();
+
+// Get random image that hasn't been shown recently
+function getRandomImage() {
+    // If we've used all images, reset
+    if (usedImages.size >= galleryImages.length) {
+        usedImages.clear();
+    }
+
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * galleryImages.length);
+    } while (usedImages.has(randomIndex));
+
+    usedImages.add(randomIndex);
+    return galleryImages[randomIndex];
+}
+
+function updateGalleryImages() {
+    const gallerySlots = document.querySelectorAll('.gallery-item');
+
+    gallerySlots.forEach((slot) => {
+        const img = slot.querySelector('.gallery-image');
+        if (img) {
+            // Fade out
+            img.style.opacity = '0';
+
+            setTimeout(() => {
+                // Get random image
+                const imageSrc = getRandomImage();
+                img.src = imageSrc;
+
+                // Add error handling
+                img.onerror = function () {
+                    console.error(`Failed to load image: ${imageSrc}`);
+                    const newImageSrc = getRandomImage();
+                    this.src = newImageSrc;
+                };
+
+                // Fade in once loaded
+                img.onload = function () {
+                    this.style.opacity = '1';
+                };
+            }, 600);
+        }
+    });
+}
+
+// Initialize gallery with random images
+function initializeGallery() {
+    usedImages.clear(); // Reset to ensure fresh start
+    const gallerySlots = document.querySelectorAll('.gallery-item');
+
+    gallerySlots.forEach((slot, index) => {
+        const img = slot.querySelector('.gallery-image');
+        if (img) {
+            const imageSrc = getRandomImage();
+            img.src = imageSrc;
+            img.style.opacity = '0';
+
+            // Add error handling
+            img.onerror = function () {
+                console.error(`Failed to load image: ${imageSrc}`);
+                // Try another image if this one fails
+                const newImageSrc = getRandomImage();
+                this.src = newImageSrc;
+            };
+
+            // Fade in once loaded
+            img.onload = function () {
+                this.style.opacity = '1';
+            };
+        }
+    });
+}
+
+// Start the gallery
+initializeGallery();
+
+// Rotate images every 8 seconds
+setInterval(updateGalleryImages, 8000);
 
 // ==================== COUNTDOWN TIMER ====================
 function updateCountdown() {
