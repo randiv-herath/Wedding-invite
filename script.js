@@ -479,18 +479,25 @@ function updateCarousel(instant = false) {
     imagesPerSlide = getImagesPerSlide();
     const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
 
-    // Calculate offset based on items per slide
-    // Each slide moves by the width of imagesPerSlide items
-    const offset = currentSlide * (100 / imagesPerSlide);
+    // Get the actual width of one item plus gap
+    const items = track.querySelectorAll('.gallery-item');
+    if (items.length === 0) return;
+
+    const firstItem = items[0];
+    const itemWidth = firstItem.offsetWidth;
+    const gap = window.innerWidth <= 480 ? 10 : (window.innerWidth <= 768 ? 15 : 20);
+
+    // Calculate pixel offset
+    const offset = currentSlide * imagesPerSlide * (itemWidth + gap);
 
     if (instant) {
         track.style.transition = 'none';
-        track.style.transform = `translateX(-${offset}%)`;
+        track.style.transform = `translateX(-${offset}px)`;
         // Force reflow
         track.offsetHeight;
         track.style.transition = 'transform 0.6s ease-in-out';
     } else {
-        track.style.transform = `translateX(-${offset}%)`;
+        track.style.transform = `translateX(-${offset}px)`;
     }
 
     // Update dots (loop for infinite effect)
