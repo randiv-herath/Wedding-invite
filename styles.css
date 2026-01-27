@@ -1338,7 +1338,7 @@ h3 {
 
 .gallery-item {
     position: relative;
-    flex: 0 0 calc(33.333% - 14px);
+    flex: 0 0 calc(33.333% - 13.333px);
     overflow: hidden;
     border-radius: 10px;
     aspect-ratio: 1;

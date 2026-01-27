@@ -479,7 +479,9 @@ function updateCarousel(instant = false) {
     imagesPerSlide = getImagesPerSlide();
     const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
 
-    const offset = currentSlide * 100;
+    // Calculate offset based on items per slide
+    // Each slide moves by the width of imagesPerSlide items
+    const offset = currentSlide * (100 / imagesPerSlide);
 
     if (instant) {
         track.style.transition = 'none';
