@@ -2292,18 +2292,16 @@ h3 {
     }
 
     .gallery-carousel {
-        padding: 0;
+        padding: 0 20px;
         overflow: hidden;
-        margin: 0 -20px;
     }
 
     .gallery-track {
-        gap: 0;
-        padding: 0 20px;
+        gap: 10px;
     }
 
     .gallery-item {
-        flex: 0 0 calc(100% - 40px);
+        flex: 0 0 calc(100% - 20px);
         margin: 0;
         flex-shrink: 0;
     }
