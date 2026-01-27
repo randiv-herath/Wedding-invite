@@ -729,20 +729,6 @@ h3 {
     pointer-events: none;
 }
 
-.invitation-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background:
-        linear-gradient(90deg, transparent 0%, transparent 48%, rgba(212, 175, 55, 0.1) 49%, rgba(212, 175, 55, 0.1) 51%, transparent 52%, transparent 100%),
-        linear-gradient(0deg, transparent 0%, transparent 48%, rgba(212, 175, 55, 0.1) 49%, rgba(212, 175, 55, 0.1) 51%, transparent 52%, transparent 100%);
-    pointer-events: none;
-    opacity: 0.3;
-}
-
 .invitation-content {
     text-align: center;
     position: relative;
@@ -1481,6 +1467,14 @@ h3 {
     color: var(--text-dark);
     font-weight: 500;
     line-height: 1.8;
+}
+
+.gift-emphasis {
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration-color: var(--rose-gold);
+    text-underline-offset: 3px;
 }
 
 .rsvp-form-container {
