@@ -3,6 +3,32 @@ let scrollProgress = 0;
 let isEnvelopeOpened = false;
 let canCloseEnvelope = false;
 
+// ==================== DOM READY INITIALIZATION ====================
+document.addEventListener('DOMContentLoaded', () => {
+    // RSVP Scroll Button
+    const rsvpBtn = document.getElementById('rsvpScrollBtn');
+    if (rsvpBtn) {
+        rsvpBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const rsvpSection = document.getElementById('rsvpSection');
+            if (rsvpSection) {
+                rsvpSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+    }
+
+    // Initialize Gallery Carousel
+    initializeGalleryCarousel();
+    startAutoSlide();
+
+    // Event listeners for gallery navigation
+    const prevBtn = document.getElementById('galleryPrev');
+    const nextBtn = document.getElementById('galleryNext');
+
+    if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+    if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+});
+
 const envelopeWrapper = document.getElementById('envelopeWrapper');
 const envelopeContainer = document.getElementById('envelopeContainer');
 const flap = document.getElementById('flap');
@@ -338,10 +364,9 @@ document.querySelectorAll('.gallery-item').forEach((el, index) => {
     fadeInObserver.observe(el);
 });
 
-// ==================== GALLERY IMAGE ROTATION ====================
+// ==================== GALLERY CAROUSEL ====================
 const galleryImages = [
-    'images/20250803_171325_496.JPG',
-    'images/8297550b-ec52-4143-9cb9-804ac491417b.JPG',
+    'images/638376c8-52e2-4316-8166-5b2d21d78c47.jpeg',
     'images/88c3b0f9-37ef-4180-b4c7-0f19d606930f.JPG',
     'images/9ec63b3b-97f6-48a9-a98a-e2b5c0c1805a.JPG',
     'images/fqs 2025-10-25 192141.725.JPG',
@@ -351,94 +376,189 @@ const galleryImages = [
     'images/IMG_0945.JPG',
     'images/IMG_1092.JPG',
     'images/IMG_1105.JPG',
+    'images/IMG_1294.jpeg',
     'images/IMG_4540.JPG',
     'images/IMG_4848.JPG',
+    'images/IMG_4893.jpeg',
     'images/IMG_5044.JPG',
     'images/IMG_5928.JPG',
     'images/IMG_9461.JPG'
 ];
 
-let usedImages = new Set();
+let currentSlide = 0;
+let imagesPerSlide = 3;
+let autoSlideInterval;
 
-// Get random image that hasn't been shown recently
-function getRandomImage() {
-    // If we've used all images, reset
-    if (usedImages.size >= galleryImages.length) {
-        usedImages.clear();
+function getImagesPerSlide() {
+    if (window.innerWidth <= 480) return 1;
+    if (window.innerWidth <= 768) return 2;
+    return 3;
+}
+
+function createImageItem(imgSrc, index) {
+    const item = document.createElement('div');
+    item.className = 'gallery-item fade-in-up visible';
+
+    const img = document.createElement('img');
+    img.className = 'gallery-image';
+    img.alt = `Wedding moment ${index + 1}`;
+    img.style.backgroundColor = '#f0f0f0';
+    img.src = imgSrc;
+
+    img.onerror = function () {
+        const placeholder = document.createElement('div');
+        placeholder.style.cssText = `
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #faf3e8 0%, #e8d5c4 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8B7F72;
+            font-size: 18px;
+            letter-spacing: 2px;
+        `;
+        placeholder.textContent = `Photo ${index + 1}`;
+        item.innerHTML = '';
+        item.appendChild(placeholder);
+    };
+
+    img.onload = function () {
+        img.style.backgroundColor = 'transparent';
+    };
+
+    item.appendChild(img);
+    return item;
+}
+
+function initializeGalleryCarousel() {
+    const track = document.getElementById('galleryTrack');
+    const dotsContainer = document.getElementById('galleryDots');
+
+    if (!track || !dotsContainer) {
+        console.error('Gallery track or dots container not found!');
+        return;
     }
 
-    let randomIndex;
-    do {
-        randomIndex = Math.floor(Math.random() * galleryImages.length);
-    } while (usedImages.has(randomIndex));
+    imagesPerSlide = getImagesPerSlide();
+    track.innerHTML = '';
+    dotsContainer.innerHTML = '';
 
-    usedImages.add(randomIndex);
-    return galleryImages[randomIndex];
+    // Add all original images
+    galleryImages.forEach((imgSrc, index) => {
+        track.appendChild(createImageItem(imgSrc, index));
+    });
+
+    // Duplicate images for infinite loop effect
+    galleryImages.forEach((imgSrc, index) => {
+        track.appendChild(createImageItem(imgSrc, index));
+    });
+
+    // Create dots (only for original slides)
+    const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
+    for (let i = 0; i < totalSlides; i++) {
+        const dot = document.createElement('button');
+        dot.className = 'gallery-dot';
+        if (i === 0) dot.classList.add('active');
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+    }
+
+    updateCarousel();
 }
 
-function updateGalleryImages() {
-    const gallerySlots = document.querySelectorAll('.gallery-item');
+function updateCarousel(instant = false) {
+    const track = document.getElementById('galleryTrack');
+    const dots = document.querySelectorAll('.gallery-dot');
 
-    gallerySlots.forEach((slot) => {
-        const img = slot.querySelector('.gallery-image');
-        if (img) {
-            // Fade out
-            img.style.opacity = '0';
+    if (!track) return;
 
-            setTimeout(() => {
-                // Get random image
-                const imageSrc = getRandomImage();
-                img.src = imageSrc;
+    imagesPerSlide = getImagesPerSlide();
+    const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
 
-                // Add error handling
-                img.onerror = function () {
-                    console.error(`Failed to load image: ${imageSrc}`);
-                    const newImageSrc = getRandomImage();
-                    this.src = newImageSrc;
-                };
+    const offset = currentSlide * 100;
 
-                // Fade in once loaded
-                img.onload = function () {
-                    this.style.opacity = '1';
-                };
-            }, 600);
-        }
+    if (instant) {
+        track.style.transition = 'none';
+        track.style.transform = `translateX(-${offset}%)`;
+        // Force reflow
+        track.offsetHeight;
+        track.style.transition = 'transform 0.6s ease-in-out';
+    } else {
+        track.style.transform = `translateX(-${offset}%)`;
+    }
+
+    // Update dots (loop for infinite effect)
+    const dotIndex = currentSlide % totalSlides;
+    dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === dotIndex);
     });
 }
 
-// Initialize gallery with random images
-function initializeGallery() {
-    usedImages.clear(); // Reset to ensure fresh start
-    const gallerySlots = document.querySelectorAll('.gallery-item');
-
-    gallerySlots.forEach((slot, index) => {
-        const img = slot.querySelector('.gallery-image');
-        if (img) {
-            const imageSrc = getRandomImage();
-            img.src = imageSrc;
-            img.style.opacity = '0';
-
-            // Add error handling
-            img.onerror = function () {
-                console.error(`Failed to load image: ${imageSrc}`);
-                // Try another image if this one fails
-                const newImageSrc = getRandomImage();
-                this.src = newImageSrc;
-            };
-
-            // Fade in once loaded
-            img.onload = function () {
-                this.style.opacity = '1';
-            };
-        }
-    });
+function goToSlide(slideIndex) {
+    const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
+    currentSlide = (slideIndex + totalSlides) % totalSlides;
+    updateCarousel();
+    resetAutoSlide();
 }
 
-// Start the gallery
-initializeGallery();
+function nextSlide() {
+    const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
+    currentSlide++;
+    updateCarousel();
 
-// Rotate images every 8 seconds
-setInterval(updateGalleryImages, 8000);
+    // When we reach the duplicated slides, instantly reset to the beginning
+    if (currentSlide >= totalSlides) {
+        setTimeout(() => {
+            currentSlide = 0;
+            updateCarousel(true);
+        }, 600); // Wait for transition to complete
+    }
+
+    resetAutoSlide();
+}
+
+function prevSlide() {
+    const totalSlides = Math.ceil(galleryImages.length / imagesPerSlide);
+
+    if (currentSlide === 0) {
+        // Jump to the end (duplicated section) instantly, then animate back
+        currentSlide = totalSlides;
+        updateCarousel(true);
+        setTimeout(() => {
+            currentSlide = totalSlides - 1;
+            updateCarousel();
+        }, 50);
+    } else {
+        currentSlide--;
+        updateCarousel();
+    }
+
+    resetAutoSlide();
+}
+
+function startAutoSlide() {
+    autoSlideInterval = setInterval(nextSlide, 4000);
+}
+
+function resetAutoSlide() {
+    clearInterval(autoSlideInterval);
+    startAutoSlide();
+}
+
+
+
+// Update on window resize
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        const newImagesPerSlide = getImagesPerSlide();
+        if (newImagesPerSlide !== imagesPerSlide) {
+            initializeGalleryCarousel();
+        }
+    }, 250);
+});
 
 // ==================== COUNTDOWN TIMER ====================
 function updateCountdown() {
