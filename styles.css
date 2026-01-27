@@ -2294,18 +2294,22 @@ h3 {
     }
 
     .gallery-carousel {
-        padding: 0 20px;
+        padding: 0 15px;
         overflow: hidden;
     }
 
     .gallery-track {
-        gap: 10px;
+        gap: 0;
     }
 
     .gallery-item {
-        flex: 0 0 calc(100% - 20px);
-        margin: 0;
+        flex: 0 0 calc(100% - 30px);
+        margin: 0 15px 0 0;
         flex-shrink: 0;
+    }
+
+    .gallery-item:last-child {
+        margin-right: 0;
     }
 
     .gallery-nav {
