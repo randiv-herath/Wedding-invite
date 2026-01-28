@@ -763,7 +763,23 @@ if (rsvpForm) {
     rsvpForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Validate that the guest name is in the database
+        // Get the guest name from the form
+        const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
+        const enteredName = nameInput?.value?.trim();
+
+        // Validate that the entered name is in the guest database
+        if (enteredName) {
+            const guestData = getGuestData(enteredName);
+            if (!guestData) {
+                alert('We couldn\'t find your name in our guest list. Please check your invitation or contact us directly.');
+                return;
+            }
+        } else {
+            alert('Please enter your name.');
+            return;
+        }
+
+        // Also validate URL parameter if present
         const params = new URLSearchParams(window.location.search);
         const nameFromUrl = params.get('name');
 
