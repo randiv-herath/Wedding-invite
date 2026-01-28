@@ -130,6 +130,9 @@ function openEnvelope() {
 
     const mainContent = document.getElementById('mainContent');
 
+    // Move envelope wrapper to background
+    envelopeWrapper.classList.add('opened');
+
     // Hide scroll indicator
     gsap.to(scrollIndicator, {
         duration: 0.3,
@@ -147,7 +150,7 @@ function openEnvelope() {
         });
     }, 100);
 
-    // Then: Open the vertical flaps and make them disappear (wait for wax seal to finish)
+    // Then: Open the vertical flaps (wait for wax seal to finish)
     setTimeout(() => {
         if (flapLeft) flapLeft.classList.add('open');
         if (flapRight) flapRight.classList.add('open');
@@ -155,7 +158,6 @@ function openEnvelope() {
         gsap.to(flapLeft, {
             duration: 1,
             rotateY: -120,
-            opacity: 0,
             ease: "power2.inOut",
             transformOrigin: "left center"
         });
@@ -163,24 +165,10 @@ function openEnvelope() {
         gsap.to(flapRight, {
             duration: 1,
             rotateY: 120,
-            opacity: 0,
             ease: "power2.inOut",
             transformOrigin: "right center"
         });
-
-        // Also fade out the envelope wrapper completely
-        gsap.to(envelopeWrapper, {
-            duration: 0.8,
-            opacity: 0,
-            ease: "power2.inOut",
-            delay: 0.4
-        });
     }, 800);
-
-    // Create sparkle burst as envelope opens
-    setTimeout(() => {
-        createSparkles(40);
-    }, 1000);
 
     // Animate the entire website emerging from the envelope
     setTimeout(() => {
@@ -193,7 +181,7 @@ function openEnvelope() {
         mainContent.style.width = '100vw';
         mainContent.style.height = '100vh';
         mainContent.style.overflow = 'auto';
-        mainContent.style.zIndex = '100';
+        mainContent.style.zIndex = '2';
         mainContent.style.pointerEvents = 'auto';
         mainContent.style.background = '#FFF8F0';
 
@@ -215,8 +203,8 @@ function openEnvelope() {
             scale: 1,
             ease: "power2.out",
             onComplete: () => {
-                // Hide envelope completely
-                envelopeWrapper.style.display = 'none';
+                // Keep envelope visible in background
+                envelopeWrapper.style.pointerEvents = 'none';
                 canCloseEnvelope = true;
 
                 // Ensure we're showing the invitation card at the top
@@ -891,21 +879,12 @@ function closeEnvelope() {
         }
     });
 
-    // Then: Show envelope and flaps back
+    // Then: Close the flaps first
     setTimeout(() => {
-        // Show envelope wrapper
-        envelopeWrapper.style.display = 'block';
-        gsap.to(envelopeWrapper, {
-            duration: 0.6,
-            opacity: 1,
-            ease: "power2.out"
-        });
-
         // Close the flaps - rotate back closed
         gsap.to(flapLeft, {
             duration: 1,
             rotateY: 0,
-            opacity: 1,
             ease: "power2.inOut",
             transformOrigin: "left center",
             onComplete: () => {
@@ -916,16 +895,21 @@ function closeEnvelope() {
         gsap.to(flapRight, {
             duration: 1,
             rotateY: 0,
-            opacity: 1,
             ease: "power2.inOut",
             transformOrigin: "right center",
             onComplete: () => {
                 if (flapRight) flapRight.classList.remove('open');
             }
         });
+
+        // Move envelope wrapper back to front
+        envelopeWrapper.classList.remove('opened');
+
+        // Re-enable envelope interactions
+        envelopeWrapper.style.pointerEvents = 'auto';
     }, 400);
 
-    // Finally: Show wax seal again (after flaps are closed)
+    // Finally: Show wax seal AFTER flaps are closed
     setTimeout(() => {
         gsap.to(waxSeal, {
             duration: 0.6,
@@ -941,13 +925,10 @@ function closeEnvelope() {
             y: 0
         });
 
-        // Re-enable envelope interactions
-        envelopeWrapper.style.pointerEvents = 'auto';
-
         setTimeout(() => {
             canCloseEnvelope = true;
         }, 500);
-    }, 1200);
+    }, 1600);
 }
 
 // Listen to main content scroll to close envelope when at top
