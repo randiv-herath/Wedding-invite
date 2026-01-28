@@ -747,7 +747,7 @@ function checkExistingRsvp() {
 checkExistingRsvp();
 
 if (rsvpForm) {
-    rsvpForm.addEventListener('submit', (e) => {
+    rsvpForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // Show loading state
@@ -756,77 +756,93 @@ if (rsvpForm) {
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
 
-        const formSparkFormId = 'TcYZdRGLl';
         const formData = new FormData(rsvpForm);
+        const attendanceValue = rsvpForm.querySelector('input[name="attendance"]:checked')?.value;
+        const isAttending = attendanceValue === 'Joyfully Accept';
+        const guestName = rsvpForm.querySelector('input[name="guest_name"]')?.value;
 
-        // Send to FormSpark
-        fetch(`https://submit-form.com/${formSparkFormId}`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json'
-            },
-            body: formData
-        })
-            .then(() => {
-                const formContainer = document.querySelector('.rsvp-form-container');
-                const attendanceValue = rsvpForm.querySelector('input[name="attendance"]:checked')?.value;
-                const isAttending = attendanceValue === 'Joyfully Accept';
-                const guestName = rsvpForm.querySelector('input[name="guest_name"]')?.value;
-
-                // Save to localStorage so it persists on page reload
-                if (guestName) {
-                    const storageKey = `rsvp_submitted_${guestName.toLowerCase().replace(/\s+/g, '_')}`;
-                    localStorage.setItem(storageKey, JSON.stringify({
-                        name: guestName,
-                        attendance: attendanceValue,
-                        timestamp: new Date().toISOString()
-                    }));
-                }
-
-                // Animate form out
-                rsvpForm.style.transform = 'scale(0.95)';
-                rsvpForm.style.opacity = '0';
-
-                setTimeout(() => {
-                    if (isAttending) {
-                        formContainer.innerHTML = `
-                                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
-                                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
-                                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
-                                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                                            We've received your RSVP and can't wait to celebrate with you!<br>
-                                            We'll be in touch soon.
-                                        </p>
-                                        <div style="margin-top: 30px;">
-                                            <span style="font-size: 48px;">💕</span>
-                                        </div>
-                                    </div>
-                                `;
-                        // Trigger confetti for attending guests
-                        createConfetti();
-                    } else {
-                        formContainer.innerHTML = `
-                                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
-                                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
-                                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
-                                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                                            We've received your response and understand you won't be able to join us.<br>
-                                            You'll be missed on our special day.
-                                        </p>
-                                        <div style="margin-top: 30px;">
-                                            <span style="font-size: 48px;">🤍</span>
-                                        </div>
-                                    </div>
-                                `;
-                    }
-                }, 300);
-            })
-            .catch((error) => {
-                console.error('FormSpark Error:', error);
-                alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+        try {
+            // Send to FormSpark
+            const response = await fetch('https://submit-form.com/TcYZdRGLl', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    guest_name: formData.get('guest_name'),
+                    attendance: formData.get('attendance'),
+                    guest_count: formData.get('guest_count'),
+                    dietary_restrictions: formData.get('dietary_restrictions')
+                })
             });
+
+            console.log('FormSpark response status:', response.status);
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('FormSpark error:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log('FormSpark success:', result);
+
+            // Save to localStorage so it persists on page reload
+            if (guestName) {
+                const storageKey = `rsvp_submitted_${guestName.toLowerCase().replace(/\s+/g, '_')}`;
+                localStorage.setItem(storageKey, JSON.stringify({
+                    name: guestName,
+                    attendance: attendanceValue,
+                    timestamp: new Date().toISOString()
+                }));
+            }
+
+            // Animate form out
+            rsvpForm.style.transform = 'scale(0.95)';
+            rsvpForm.style.opacity = '0';
+
+            const formContainer = document.querySelector('.rsvp-form-container');
+
+            setTimeout(() => {
+                if (isAttending) {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                            <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                            <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                            <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                                We've received your RSVP and can't wait to celebrate with you!<br>
+                                We'll be in touch soon.
+                            </p>
+                            <div style="margin-top: 30px;">
+                                <span style="font-size: 48px;">💕</span>
+                            </div>
+                        </div>
+                    `;
+                    // Trigger confetti for attending guests
+                    createConfetti();
+                } else {
+                    formContainer.innerHTML = `
+                        <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                            <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                            <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                            <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                                We've received your response and understand you won't be able to join us.<br>
+                                You'll be missed on our special day.
+                            </p>
+                            <div style="margin-top: 30px;">
+                                <span style="font-size: 48px;">🤍</span>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 300);
+        } catch (error) {
+            console.error('FormSpark Error details:', error);
+            alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
     });
 }
 
@@ -947,6 +963,14 @@ function closeEnvelope() {
 
     const mainContent = document.getElementById('mainContent');
 
+    // Hide particles during closing animation
+    if (canvas) {
+        gsap.to(canvas, {
+            duration: 0.3,
+            opacity: 0
+        });
+    }
+
     // First: Fade out main content
     gsap.to(mainContent, {
         duration: 0.6,
@@ -1004,6 +1028,14 @@ function closeEnvelope() {
             opacity: 1,
             y: 0
         });
+
+        // Show particles again
+        if (canvas) {
+            gsap.to(canvas, {
+                duration: 0.5,
+                opacity: 1
+            });
+        }
 
         setTimeout(() => {
             canCloseEnvelope = true;

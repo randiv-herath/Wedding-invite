@@ -4,8 +4,8 @@
     --light-beige: #FAF3E8;
     --cream: #FFF8F0;
     --nude: #E8D5C4;
-    --gold: #D4AF37;
-    --light-gold: #F0E68C;
+    --gold: #B8904A;
+    --light-gold: #D4AF6E;
     --rose-gold: #B76E79;
     --white: #FFFFFF;
     --soft-gray: #E5E5E5;
@@ -968,8 +968,35 @@ h3 {
 }
 
 .invitation-monogram {
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.monogram-image {
+    width: 100px;
+    height: auto;
+    filter: drop-shadow(0 3px 8px rgba(184, 144, 74, 0.2));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.monogram-image:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 5px 12px rgba(184, 144, 74, 0.3));
+}
+
+.monogram-svg {
+    width: 150px;
+    height: auto;
+    filter: drop-shadow(0 4px 12px rgba(201, 168, 82, 0.25));
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.monogram-svg:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 6px 16px rgba(201, 168, 82, 0.35));
 }
 
 .monogram-text-card {
@@ -977,7 +1004,7 @@ h3 {
     font-size: 52px;
     color: var(--gold);
     letter-spacing: 3px;
-    text-shadow: 0 2px 8px rgba(212, 175, 55, 0.2);
+    text-shadow: 0 2px 8px rgba(201, 168, 82, 0.3);
     display: inline-block;
 }
 
@@ -1045,7 +1072,7 @@ h3 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 42px;
     color: var(--gold);
-    margin: 15px 0;
+    margin: 4px 0;
     font-weight: 500;
     letter-spacing: 5px;
     text-shadow: 0 2px 4px rgba(212, 175, 55, 0.1);
@@ -1055,7 +1082,7 @@ h3 {
     font-family: 'Cormorant Garamond', serif;
     font-size: 32px;
     color: var(--text-dark);
-    margin: 12px 0;
+    margin: 2px 0;
     font-weight: 300;
 }
 
