@@ -643,7 +643,6 @@ function prefillRsvpFromUrl() {
 
     const params = new URLSearchParams(window.location.search);
     const nameFromUrl = params.get('name');
-    let guestCountFromUrl = params.get('guest');
 
     const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
     const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
@@ -653,15 +652,17 @@ function prefillRsvpFromUrl() {
         const guestData = getGuestData(nameFromUrl);
 
         if (guestData) {
-            // Use database values
+            // Use database values ONLY - URL parameters cannot override
             if (nameInput) {
                 nameInput.value = guestData.name;
                 nameInput.readOnly = true;
             }
-            if (guestCountInput && !guestCountFromUrl) {
-                // Use guest count from database if not specified in URL
+            if (guestCountInput) {
+                // Always use guest count from database - ignore URL parameters
                 guestCountInput.value = guestData.guestCount;
                 guestCountInput.readOnly = true;
+                // Store the valid guest count for validation
+                guestCountInput.dataset.validCount = guestData.guestCount;
             }
         } else {
             // Guest not in database - block the form
@@ -682,15 +683,6 @@ function prefillRsvpFromUrl() {
                 `;
             }
             return;
-        }
-    }
-
-    // URL guest count parameter overrides database
-    if (guestCountFromUrl && guestCountInput) {
-        const parsedGuestCount = parseInt(guestCountFromUrl, 10);
-        if (!Number.isNaN(parsedGuestCount)) {
-            guestCountInput.value = String(parsedGuestCount);
-            guestCountInput.readOnly = true;
         }
     }
 }
@@ -766,12 +758,21 @@ if (rsvpForm) {
         // Get the guest name from the form
         const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
         const enteredName = nameInput?.value?.trim();
+        const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
+        const enteredGuestCount = guestCountInput?.value;
 
         // Validate that the entered name is in the guest database
         if (enteredName) {
             const guestData = getGuestData(enteredName);
             if (!guestData) {
                 alert('We couldn\'t find your name in our guest list. Please check your invitation or contact us directly.');
+                return;
+            }
+
+            // CRITICAL: Validate that guest count matches database value
+            if (enteredGuestCount && String(guestData.guestCount) !== String(enteredGuestCount)) {
+                alert('Invalid guest count. The number of guests has been reset to match your invitation.');
+                guestCountInput.value = guestData.guestCount;
                 return;
             }
         } else {
@@ -787,6 +788,13 @@ if (rsvpForm) {
             const guestData = getGuestData(nameFromUrl);
             if (!guestData) {
                 alert('Invalid invitation. Please check your invitation link.');
+                return;
+            }
+
+            // Double-check guest count matches database for URL-based invitation
+            if (enteredGuestCount && String(guestData.guestCount) !== String(enteredGuestCount)) {
+                alert('Invalid guest count. The number of guests has been reset to match your invitation.');
+                guestCountInput.value = guestData.guestCount;
                 return;
             }
         }
