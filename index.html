@@ -20,22 +20,78 @@
         <div class="envelope-shimmer"></div>
         <div class="envelope-container" id="envelopeContainer">
             <div class="envelope-shadow"></div>
-            <div class="envelope-panel">
-                <div class="envelope-back">
-                    <div class="envelope-texture"></div>
-                    <div class="envelope-decoration">
-                        <div class="corner-flourish top-left"></div>
-                        <div class="corner-flourish top-right"></div>
-                        <div class="corner-flourish bottom-left"></div>
-                        <div class="corner-flourish bottom-right"></div>
-                        <div class="envelope-border-inner"></div>
+            <div class="envelope-body">
+                <!-- Main envelope rectangle -->
+                <div class="envelope-main">
+                    <div class="envelope-texture-pattern"></div>
+                    <div class="envelope-border-design"></div>
+
+                    <!-- Gold Corner Flourishes -->
+                    <div class="corner-ornament top-left">
+                        <svg viewBox="0 0 100 100" class="ornament-svg">
+                            <path d="M10,10 Q30,10 30,30 L30,100" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <path d="M10,10 Q10,30 30,30 L100,30" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <circle cx="30" cy="30" r="3" fill="#D4AF37" />
+                            <path d="M15,15 Q25,15 25,25" stroke="#F0E68C" fill="none" stroke-width="1" opacity="0.6" />
+                        </svg>
+                    </div>
+                    <div class="corner-ornament top-right">
+                        <svg viewBox="0 0 100 100" class="ornament-svg">
+                            <path d="M90,10 Q70,10 70,30 L70,100" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <path d="M90,10 Q90,30 70,30 L0,30" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <circle cx="70" cy="30" r="3" fill="#D4AF37" />
+                            <path d="M85,15 Q75,15 75,25" stroke="#F0E68C" fill="none" stroke-width="1" opacity="0.6" />
+                        </svg>
+                    </div>
+                    <div class="corner-ornament bottom-left">
+                        <svg viewBox="0 0 100 100" class="ornament-svg">
+                            <path d="M10,90 Q30,90 30,70 L30,0" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <path d="M10,90 Q10,70 30,70 L100,70" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <circle cx="30" cy="70" r="3" fill="#D4AF37" />
+                            <path d="M15,85 Q25,85 25,75" stroke="#F0E68C" fill="none" stroke-width="1" opacity="0.6" />
+                        </svg>
+                    </div>
+                    <div class="corner-ornament bottom-right">
+                        <svg viewBox="0 0 100 100" class="ornament-svg">
+                            <path d="M90,90 Q70,90 70,70 L70,0" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <path d="M90,90 Q90,70 70,70 L0,70" stroke="#D4AF37" fill="none" stroke-width="2" />
+                            <circle cx="70" cy="70" r="3" fill="#D4AF37" />
+                            <path d="M85,85 Q75,85 75,75" stroke="#F0E68C" fill="none" stroke-width="1" opacity="0.6" />
+                        </svg>
+                    </div>
+
+                    <!-- Decorative Gold Lines -->
+                    <div class="decorative-lines">
+                        <svg class="line-top" viewBox="0 0 400 20" preserveAspectRatio="xMidYMid meet">
+                            <path d="M50,10 L180,10 M220,10 L350,10" stroke="#D4AF37" stroke-width="2" fill="none" />
+                            <circle cx="200" cy="10" r="8" fill="none" stroke="#D4AF37" stroke-width="2" />
+                            <circle cx="200" cy="10" r="4" fill="#F0E68C" />
+                            <path d="M185,10 Q185,5 190,5 L210,5 Q215,5 215,10" stroke="#D4AF37" stroke-width="1"
+                                fill="none" opacity="0.6" />
+                        </svg>
+                        <svg class="line-bottom" viewBox="0 0 400 20" preserveAspectRatio="xMidYMid meet">
+                            <path d="M50,10 L180,10 M220,10 L350,10" stroke="#D4AF37" stroke-width="2" fill="none" />
+                            <circle cx="200" cy="10" r="8" fill="none" stroke="#D4AF37" stroke-width="2" />
+                            <circle cx="200" cy="10" r="4" fill="#F0E68C" />
+                            <path d="M185,10 Q185,15 190,15 L210,15 Q215,15 215,10" stroke="#D4AF37" stroke-width="1"
+                                fill="none" opacity="0.6" />
+                        </svg>
                     </div>
                 </div>
-                <div class="envelope-flap" id="flap">
-                    <div class="flap-texture"></div>
+
+                <!-- Left flap -->
+                <div class="envelope-flap-left" id="flapLeft">
+                    <div class="flap-design"></div>
                 </div>
-                <div class="envelope-letter" id="letter">
-                    <!-- Letter comes out as visual effect only -->
+
+                <!-- Right flap -->
+                <div class="envelope-flap-right" id="flapRight">
+                    <div class="flap-design"></div>
+                </div>
+
+                <!-- Wax seal in center -->
+                <div class="wax-seal" id="waxSeal">
+                    <img src="envelop/wax_seal.png" alt="" class="wax-seal-image">
                 </div>
             </div>
         </div>

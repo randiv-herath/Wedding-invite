@@ -34,8 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const envelopeWrapper = document.getElementById('envelopeWrapper');
 const envelopeContainer = document.getElementById('envelopeContainer');
-const flap = document.getElementById('flap');
-const letter = document.getElementById('letter');
+const flapLeft = document.getElementById('flapLeft');
+const flapRight = document.getElementById('flapRight');
 const waxSeal = document.getElementById('waxSeal');
 const scrollIndicator = document.getElementById('scrollIndicator');
 
@@ -121,33 +121,7 @@ gsap.from(scrollIndicator, {
 });
 
 // ==================== INTERACTIVE HOVER EFFECTS ====================
-envelopeContainer.addEventListener('mousemove', (e) => {
-    const rect = envelopeContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-
-    const rotateX = (y - centerY) / 20;
-    const rotateY = (centerX - x) / 20;
-
-    gsap.to(envelopeContainer, {
-        duration: 0.3,
-        rotationX: rotateX,
-        rotationY: rotateY,
-        ease: "power2.out"
-    });
-});
-
-envelopeContainer.addEventListener('mouseleave', () => {
-    gsap.to(envelopeContainer, {
-        duration: 0.5,
-        rotationX: 0,
-        rotationY: 0,
-        ease: "power2.out"
-    });
-});
+// Hover effects disabled for full-screen envelope
 
 // ==================== OPENING ANIMATION ====================
 function openEnvelope() {
@@ -155,11 +129,6 @@ function openEnvelope() {
     isEnvelopeOpened = true;
 
     const mainContent = document.getElementById('mainContent');
-    const invitationCard = document.querySelector('.invitation-card');
-
-    // Make main content visible but keep it hidden initially
-    mainContent.style.display = 'block';
-    mainContent.style.opacity = '0';
 
     // Hide scroll indicator
     gsap.to(scrollIndicator, {
@@ -168,95 +137,93 @@ function openEnvelope() {
         y: 20
     });
 
-    // Open flap with elegant animation
+    // First: Pulse and fade the wax seal COMPLETELY
     setTimeout(() => {
-        flap.classList.add('open');
+        gsap.to(waxSeal, {
+            duration: 0.6,
+            scale: 1.2,
+            opacity: 0,
+            ease: "power2.in"
+        });
+    }, 100);
 
-        gsap.to(flap, {
+    // Then: Open the vertical flaps and make them disappear (wait for wax seal to finish)
+    setTimeout(() => {
+        if (flapLeft) flapLeft.classList.add('open');
+        if (flapRight) flapRight.classList.add('open');
+
+        gsap.to(flapLeft, {
             duration: 1,
-            rotationX: -180,
-            transformOrigin: "top center",
+            rotateY: -120,
+            opacity: 0,
             ease: "power2.inOut",
-            force3D: true
-        });
-    }, 200);
-
-    // Create sparkle burst as envelope opens
-    setTimeout(() => {
-        createSparkles(30);
-    }, 800);
-
-    // Animate the actual invitation card to appear from envelope position
-    setTimeout(() => {
-        // Position the invitation card at envelope location
-        const envelopeRect = envelopeContainer.getBoundingClientRect();
-
-        gsap.set(invitationCard, {
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            xPercent: -50,
-            yPercent: -50,
-            width: '540px',
-            scale: 0.7,
-            opacity: 1,
-            zIndex: 9999
+            transformOrigin: "left center"
         });
 
-        // Animate card emerging and growing
-        gsap.to(invitationCard, {
-            duration: 1.2,
-            scale: 1,
-            ease: "power2.out"
+        gsap.to(flapRight, {
+            duration: 1,
+            rotateY: 120,
+            opacity: 0,
+            ease: "power2.inOut",
+            transformOrigin: "right center"
         });
 
-        // Fade out envelope wrapper
+        // Also fade out the envelope wrapper completely
         gsap.to(envelopeWrapper, {
             duration: 0.8,
             opacity: 0,
-            delay: 0.8,
             ease: "power2.inOut",
+            delay: 0.4
+        });
+    }, 800);
+
+    // Create sparkle burst as envelope opens
+    setTimeout(() => {
+        createSparkles(40);
+    }, 1000);
+
+    // Animate the entire website emerging from the envelope
+    setTimeout(() => {
+        // Make main content visible and position it inside the envelope
+        mainContent.classList.add('visible');
+        mainContent.style.display = 'block';
+        mainContent.style.position = 'fixed';
+        mainContent.style.top = '0';
+        mainContent.style.left = '0';
+        mainContent.style.width = '100vw';
+        mainContent.style.height = '100vh';
+        mainContent.style.overflow = 'auto';
+        mainContent.style.zIndex = '100';
+        mainContent.style.pointerEvents = 'auto';
+        mainContent.style.background = '#FFF8F0';
+
+        // Scroll to the invitation card section first (before animation)
+        const invitationSection = document.querySelector('.formal-invitation-section');
+        if (invitationSection) {
+            mainContent.scrollTop = 0;
+        }
+
+        gsap.set(mainContent, {
+            opacity: 0,
+            scale: 1
+        });
+
+        // Fade in the website content
+        gsap.to(mainContent, {
+            duration: 1,
+            opacity: 1,
+            scale: 1,
+            ease: "power2.out",
             onComplete: () => {
+                // Hide envelope completely
                 envelopeWrapper.style.display = 'none';
+                canCloseEnvelope = true;
 
-                // Reset invitation card to normal position
-                gsap.to(invitationCard, {
-                    duration: 0.6,
-                    position: 'relative',
-                    top: 'auto',
-                    left: 'auto',
-                    xPercent: 0,
-                    yPercent: 0,
-                    width: '',
-                    clearProps: 'all',
-                    ease: "power2.inOut",
-                    onComplete: () => {
-                        // Show full page content
-                        document.body.style.overflow = 'auto';
-
-                        // Scroll to the invitation card section
-                        const invitationSection = document.querySelector('.formal-invitation-section');
-                        if (invitationSection) {
-                            window.scrollTo({
-                                top: 0,
-                                behavior: 'smooth'
-                            });
-                        }
-
-                        gsap.to(mainContent, {
-                            duration: 0.5,
-                            opacity: 1,
-                            ease: "power2.out"
-                        });
-
-                        setTimeout(() => {
-                            canCloseEnvelope = true;
-                        }, 300);
-                    }
-                });
+                // Ensure we're showing the invitation card at the top
+                mainContent.scrollTop = 0;
             }
         });
-    }, 1400);
+    }, 800);
 }
 
 // ==================== SPARKLE EFFECTS ====================
@@ -890,6 +857,112 @@ document.addEventListener('mousemove', (e) => {
 
 // ==================== RESPONSIVE NAVIGATION FOR MOBILE ====================
 let lastScrollTop = 0;
+
+// Listen to main content scroll to close envelope when at top
+const mainContent = document.getElementById('mainContent');
+if (mainContent) {
+    mainContent.addEventListener('scroll', () => {
+        const scrollTop = mainContent.scrollTop;
+
+        // If user scrolls back to the very top, close the envelope
+        if (scrollTop <= 0 && isEnvelopeOpened && canCloseEnvelope) {
+            closeEnvelope();
+        }
+    });
+}
+
+function closeEnvelope() {
+    if (!canCloseEnvelope) return;
+
+    isEnvelopeOpened = false;
+    canCloseEnvelope = false;
+
+    const mainContent = document.getElementById('mainContent');
+
+    // First: Fade out main content
+    gsap.to(mainContent, {
+        duration: 0.6,
+        opacity: 0,
+        scale: 0.95,
+        ease: "power2.in",
+        onComplete: () => {
+            mainContent.style.display = 'none';
+            mainContent.classList.remove('visible');
+        }
+    });
+
+    // Then: Show envelope and flaps back
+    setTimeout(() => {
+        // Show envelope wrapper
+        envelopeWrapper.style.display = 'block';
+        gsap.to(envelopeWrapper, {
+            duration: 0.6,
+            opacity: 1,
+            ease: "power2.out"
+        });
+
+        // Close the flaps - rotate back closed
+        gsap.to(flapLeft, {
+            duration: 1,
+            rotateY: 0,
+            opacity: 1,
+            ease: "power2.inOut",
+            transformOrigin: "left center",
+            onComplete: () => {
+                if (flapLeft) flapLeft.classList.remove('open');
+            }
+        });
+
+        gsap.to(flapRight, {
+            duration: 1,
+            rotateY: 0,
+            opacity: 1,
+            ease: "power2.inOut",
+            transformOrigin: "right center",
+            onComplete: () => {
+                if (flapRight) flapRight.classList.remove('open');
+            }
+        });
+    }, 400);
+
+    // Finally: Show wax seal again (after flaps are closed)
+    setTimeout(() => {
+        gsap.to(waxSeal, {
+            duration: 0.6,
+            scale: 1,
+            opacity: 1,
+            ease: "power2.out"
+        });
+
+        // Show scroll indicator again
+        gsap.to(scrollIndicator, {
+            duration: 0.5,
+            opacity: 1,
+            y: 0
+        });
+
+        // Re-enable envelope interactions
+        envelopeWrapper.style.pointerEvents = 'auto';
+
+        setTimeout(() => {
+            canCloseEnvelope = true;
+        }, 500);
+    }, 1200);
+}
+
+// Listen to main content scroll to close envelope when at top
+const mainContentEl = document.getElementById('mainContent');
+if (mainContentEl) {
+    mainContentEl.addEventListener('scroll', () => {
+        const scrollTop = mainContentEl.scrollTop;
+
+        // If user scrolls back to the very top, close the envelope
+        if (scrollTop <= 0 && isEnvelopeOpened && canCloseEnvelope) {
+            closeEnvelope();
+        }
+    });
+}
+
 window.addEventListener('scroll', () => {
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
