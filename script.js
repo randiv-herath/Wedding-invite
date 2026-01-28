@@ -664,11 +664,24 @@ function prefillRsvpFromUrl() {
                 guestCountInput.readOnly = true;
             }
         } else {
-            // Guest not in database, just use URL values
-            if (nameFromUrl && nameInput) {
-                nameInput.value = nameFromUrl;
-                nameInput.readOnly = true;
+            // Guest not in database - block the form
+            const formContainer = document.querySelector('.rsvp-form-container');
+            if (formContainer) {
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+                        <h3 style="font-size: 28px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Invalid Invitation</h3>
+                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                            We couldn't find your name in our guest list.<br>
+                            Please check your invitation link or contact us directly.
+                        </p>
+                        <div style="margin-top: 30px;">
+                            <span style="font-size: 48px;">💌</span>
+                        </div>
+                    </div>
+                `;
             }
+            return;
         }
     }
 
@@ -749,6 +762,18 @@ checkExistingRsvp();
 if (rsvpForm) {
     rsvpForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+
+        // Validate that the guest name is in the database
+        const params = new URLSearchParams(window.location.search);
+        const nameFromUrl = params.get('name');
+
+        if (nameFromUrl) {
+            const guestData = getGuestData(nameFromUrl);
+            if (!guestData) {
+                alert('Invalid invitation. Please check your invitation link.');
+                return;
+            }
+        }
 
         // Show loading state
         const submitBtn = rsvpForm.querySelector('.submit-btn');
