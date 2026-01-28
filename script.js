@@ -5,6 +5,9 @@ let canCloseEnvelope = false;
 
 // ==================== DOM READY INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', () => {
+    // Apply guest-specific customizations
+    customizeInvitationForGuest();
+
     // RSVP Scroll Button
     const rsvpBtn = document.getElementById('rsvpScrollBtn');
     if (rsvpBtn) {
@@ -609,25 +612,97 @@ function updateCountdown() {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 
+// ==================== GUEST CUSTOMIZATION ====================
+function customizeInvitationForGuest() {
+    const params = new URLSearchParams(window.location.search);
+    const guestName = params.get('name');
+
+    if (!guestName) {
+        // No guest specified, show everything by default
+        return;
+    }
+
+    // Get guest data from the database
+    const guestData = getGuestData(guestName);
+
+    if (!guestData) {
+        console.warn(`Guest "${guestName}" not found in database`);
+        return;
+    }
+
+    console.log(`Customizing invitation for: ${guestData.name}`, guestData);
+
+    // Get elements
+    const invitationChurchEvent = document.getElementById('invitationChurchEvent');
+    const invitationReceptionEvent = document.getElementById('invitationReceptionEvent');
+    const invitationEventDivider = document.getElementById('invitationEventDivider');
+    const detailChurchCard = document.getElementById('detailChurchCard');
+    const detailReceptionCard = document.getElementById('detailReceptionCard');
+
+    // Hide/show based on invitation type
+    if (guestData.invitedTo === 'reception') {
+        // Reception only - hide church ceremony
+        if (invitationChurchEvent) invitationChurchEvent.style.display = 'none';
+        if (invitationEventDivider) invitationEventDivider.style.display = 'none';
+        if (detailChurchCard) detailChurchCard.style.display = 'none';
+
+        // Update reception text since there's no church ceremony before it
+        const receptionTitle = invitationReceptionEvent?.querySelector('.event-title');
+        if (receptionTitle) {
+            receptionTitle.textContent = 'For the Wedding Reception';
+        }
+
+    } else if (guestData.invitedTo === 'church') {
+        // Church only - hide reception
+        if (invitationReceptionEvent) invitationReceptionEvent.style.display = 'none';
+        if (invitationEventDivider) invitationEventDivider.style.display = 'none';
+        if (detailReceptionCard) detailReceptionCard.style.display = 'none';
+
+    } else if (guestData.invitedTo === 'both') {
+        // Show everything (default behavior)
+        // No changes needed
+    }
+}
+
 // ==================== RSVP FORM HANDLING ====================
 const rsvpForm = document.getElementById('rsvpForm');
 
-// Prefill RSVP form from URL query parameters (e.g. ?name=Theeksha%20Gunasingha&guest=1)
+// Prefill RSVP form from URL query parameters and guest database
 function prefillRsvpFromUrl() {
     if (!rsvpForm) return;
 
     const params = new URLSearchParams(window.location.search);
     const nameFromUrl = params.get('name');
-    const guestCountFromUrl = params.get('guest');
+    let guestCountFromUrl = params.get('guest');
 
     const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
     const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
 
-    if (nameFromUrl && nameInput) {
-        nameInput.value = nameFromUrl;
-        nameInput.readOnly = true;
+    // Try to get guest data from database
+    if (nameFromUrl) {
+        const guestData = getGuestData(nameFromUrl);
+
+        if (guestData) {
+            // Use database values
+            if (nameInput) {
+                nameInput.value = guestData.name;
+                nameInput.readOnly = true;
+            }
+            if (guestCountInput && !guestCountFromUrl) {
+                // Use guest count from database if not specified in URL
+                guestCountInput.value = guestData.guestCount;
+                guestCountInput.readOnly = true;
+            }
+        } else {
+            // Guest not in database, just use URL values
+            if (nameFromUrl && nameInput) {
+                nameInput.value = nameFromUrl;
+                nameInput.readOnly = true;
+            }
+        }
     }
 
+    // URL guest count parameter overrides database
     if (guestCountFromUrl && guestCountInput) {
         const parsedGuestCount = parseInt(guestCountFromUrl, 10);
         if (!Number.isNaN(parsedGuestCount)) {

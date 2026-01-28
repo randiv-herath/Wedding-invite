@@ -75,12 +75,12 @@
                         <div class="invitation-divider"></div>
                         <p class="invitation-date">On Saturday | 9 | May | 2026</p>
                         <div class="invitation-events">
-                            <div class="invitation-event">
+                            <div class="invitation-event invitation-church-event" id="invitationChurchEvent">
                                 <p class="event-title">For the Holy Mass at 9.00 AM</p>
                                 <p class="event-venue">All Saints' Church, Borella</p>
                             </div>
-                            <div class="invitation-event-divider"></div>
-                            <div class="invitation-event">
+                            <div class="invitation-event-divider" id="invitationEventDivider"></div>
+                            <div class="invitation-event invitation-reception-event" id="invitationReceptionEvent">
                                 <p class="event-title">The Reception to follow</p>
                                 <p class="event-time">11.00 AM onwards</p>
                                 <p class="event-venue">Samudra Ballroom,</p>
@@ -140,7 +140,7 @@
                 </div>
                 <div class="details-grid">
                     <a href="https://maps.app.goo.gl/NkhnSC2XPyT3E4MAA" target="_blank" rel="noopener noreferrer"
-                        class="detail-card-link">
+                        class="detail-card-link detail-church-card" id="detailChurchCard">
                         <div class="detail-card fade-in-up">
                             <div class="detail-icon">⛪</div>
                             <h3>Ceremony</h3>
@@ -151,7 +151,7 @@
                         </div>
                     </a>
                     <a href="https://maps.app.goo.gl/SZR97HRohdPZhj5c7" target="_blank" rel="noopener noreferrer"
-                        class="detail-card-link">
+                        class="detail-card-link detail-reception-card" id="detailReceptionCard">
                         <div class="detail-card fade-in-up">
                             <div class="detail-icon">🍽️</div>
                             <h3>Reception</h3>
@@ -277,6 +277,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="guestData.js"></script>
     <script src="script.js"></script>
 </body>
 

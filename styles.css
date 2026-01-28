@@ -1747,6 +1747,18 @@ h3 {
     transform: translateY(0);
 }
 
+/* ==================== GUEST CUSTOMIZATION ==================== */
+.detail-card-link.hidden,
+.invitation-event.hidden,
+.invitation-event-divider.hidden {
+    display: none !important;
+}
+
+/* Adjust grid layout when church card is hidden */
+.details-grid:has(.detail-church-card[style*="display: none"]) {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
 /* ==================== RESPONSIVE DESIGN ==================== */
 
 /* Medium screens (tablets in portrait) */
