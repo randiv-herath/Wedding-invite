@@ -725,8 +725,8 @@ function checkExistingRsvp() {
                         <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
                         <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
                         <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                            We've received your response and understand you won't be able to join us.<br>
-                            You'll be missed on our special day.
+                            We've received your response and truly understand your regrets.<br>
+                            You'll be in our thoughts on our special day.
                         </p>
                         <p style="font-size: 14px; color: var(--text-light); margin-top: 20px; opacity: 0.7;">
                             Submitted on ${new Date(data.timestamp).toLocaleDateString()}
@@ -827,8 +827,8 @@ if (rsvpForm) {
                             <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
                             <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
                             <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                                We've received your response and understand you won't be able to join us.<br>
-                                You'll be missed on our special day.
+                                We've received your response and truly understand your regrets.<br>
+                                You'll be in our thoughts on our special day.
                             </p>
                             <div style="margin-top: 30px;">
                                 <span style="font-size: 48px;">🤍</span>
