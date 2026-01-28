@@ -24,6 +24,8 @@ html {
     scroll-behavior: smooth;
     overflow-x: hidden;
     -webkit-text-size-adjust: 100%;
+    width: 100%;
+    max-width: 100%;
 }
 
 body {
@@ -32,6 +34,9 @@ body {
     background: var(--cream);
     overflow-x: hidden;
     line-height: 1.6;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
 }
 
 .container {
