@@ -130,8 +130,8 @@ function openEnvelope() {
 
     const mainContent = document.getElementById('mainContent');
 
-    // Move envelope wrapper to background
-    envelopeWrapper.classList.add('opened');
+    // DON'T move envelope to background yet - keep it visible during flap opening!
+    // envelopeWrapper.classList.add('opened'); // MOVED TO AFTER FLAPS OPEN
 
     // Hide scroll indicator
     gsap.to(scrollIndicator, {
@@ -150,28 +150,43 @@ function openEnvelope() {
         });
     }, 100);
 
-    // Then: Open the vertical flaps (wait for wax seal to finish)
+    // Then: Open the vertical flaps (start right as wax seal finishes)
     setTimeout(() => {
         if (flapLeft) flapLeft.classList.add('open');
         if (flapRight) flapRight.classList.add('open');
 
-        gsap.to(flapLeft, {
-            duration: 1,
-            rotateY: -120,
-            ease: "power2.inOut",
-            transformOrigin: "left center"
-        });
+        // Animate left flap opening with a smooth swing (slower for visibility)
+        gsap.fromTo(flapLeft,
+            {
+                rotateY: 0
+            },
+            {
+                duration: 1.8,
+                rotateY: -120,
+                ease: "power1.inOut",
+                transformOrigin: "left center"
+            }
+        );
 
-        gsap.to(flapRight, {
-            duration: 1,
-            rotateY: 120,
-            ease: "power2.inOut",
-            transformOrigin: "right center"
-        });
-    }, 800);
+        // Animate right flap opening with a smooth swing (slower for visibility)
+        gsap.fromTo(flapRight,
+            {
+                rotateY: 0
+            },
+            {
+                duration: 1.8,
+                rotateY: 120,
+                ease: "power1.inOut",
+                transformOrigin: "right center"
+            }
+        );
+    }, 700); // Start flaps opening right as wax seal finishes (100ms + 600ms)
 
-    // Animate the entire website emerging from the envelope
+    // AFTER flaps are open, move envelope to background and show content
     setTimeout(() => {
+        // NOW move envelope wrapper to background (after flaps are fully open)
+        envelopeWrapper.classList.add('opened');
+
         // Make main content visible and position it inside the envelope
         mainContent.classList.add('visible');
         mainContent.style.display = 'block';
@@ -211,7 +226,7 @@ function openEnvelope() {
                 mainContent.scrollTop = 0;
             }
         });
-    }, 800);
+    }, 2700); // Wait for flaps to finish opening (700ms delay + 1800ms animation + 200ms buffer)
 }
 
 // ==================== SPARKLE EFFECTS ====================
@@ -669,6 +684,68 @@ function prefillRsvpFromUrl() {
 
 prefillRsvpFromUrl();
 
+// Check if guest has already submitted RSVP
+function checkExistingRsvp() {
+    const params = new URLSearchParams(window.location.search);
+    const guestName = params.get('name');
+
+    if (!guestName || !rsvpForm) return false;
+
+    // Create a unique key based on guest name
+    const storageKey = `rsvp_submitted_${guestName.toLowerCase().replace(/\s+/g, '_')}`;
+    const submittedData = localStorage.getItem(storageKey);
+
+    if (submittedData) {
+        const data = JSON.parse(submittedData);
+        const formContainer = document.querySelector('.rsvp-form-container');
+        const isAttending = data.attendance === 'Joyfully Accept';
+
+        // Hide the form and show thank you message
+        if (formContainer) {
+            if (isAttending) {
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                            We've received your RSVP and can't wait to celebrate with you!<br>
+                            We'll be in touch soon.
+                        </p>
+                        <p style="font-size: 14px; color: var(--text-light); margin-top: 20px; opacity: 0.7;">
+                            Submitted on ${new Date(data.timestamp).toLocaleDateString()}
+                        </p>
+                        <div style="margin-top: 30px;">
+                            <span style="font-size: 48px;">💕</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                formContainer.innerHTML = `
+                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                            We've received your response and understand you won't be able to join us.<br>
+                            You'll be missed on our special day.
+                        </p>
+                        <p style="font-size: 14px; color: var(--text-light); margin-top: 20px; opacity: 0.7;">
+                            Submitted on ${new Date(data.timestamp).toLocaleDateString()}
+                        </p>
+                        <div style="margin-top: 30px;">
+                            <span style="font-size: 48px;">🤍</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        return true;
+    }
+    return false;
+}
+
+// Check on page load
+checkExistingRsvp();
+
 if (rsvpForm) {
     rsvpForm.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -694,6 +771,17 @@ if (rsvpForm) {
                 const formContainer = document.querySelector('.rsvp-form-container');
                 const attendanceValue = rsvpForm.querySelector('input[name="attendance"]:checked')?.value;
                 const isAttending = attendanceValue === 'Joyfully Accept';
+                const guestName = rsvpForm.querySelector('input[name="guest_name"]')?.value;
+
+                // Save to localStorage so it persists on page reload
+                if (guestName) {
+                    const storageKey = `rsvp_submitted_${guestName.toLowerCase().replace(/\s+/g, '_')}`;
+                    localStorage.setItem(storageKey, JSON.stringify({
+                        name: guestName,
+                        attendance: attendanceValue,
+                        timestamp: new Date().toISOString()
+                    }));
+                }
 
                 // Animate form out
                 rsvpForm.style.transform = 'scale(0.95)';

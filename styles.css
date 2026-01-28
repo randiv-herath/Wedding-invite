@@ -1266,6 +1266,7 @@ h3 {
     align-items: center;
     justify-content: center;
     position: relative;
+    transition: transform 0.3s ease;
 }
 
 .timeline-date::after {
@@ -1307,6 +1308,11 @@ h3 {
 .timeline-content:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Also hover the timeline date and dot when content is hovered */
+.timeline-item:hover .timeline-date {
+    transform: translateY(-5px);
 }
 
 .timeline-content h3 {
