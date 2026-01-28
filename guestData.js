@@ -13,6 +13,10 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
+    'Chanula Herath': {
+        guestCount: 2,
+        invitedTo: 'both'
+    },
 
     // Add more guests here...
     // Copy the format above for each guest
