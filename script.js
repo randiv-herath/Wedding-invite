@@ -679,74 +679,66 @@ if (rsvpForm) {
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
 
-        // If EmailJS is available, send an email
-        if (window.emailjs) {
-            try {
-                emailjs.init('XFYsAHq7VkAYVs0rY'); // Public Key
+        const formSparkFormId = 'TcYZdRGLl';
+        const formData = new FormData(rsvpForm);
 
-                emailjs.sendForm('service_w5t1ovr', 'template_4kv25hj', rsvpForm)
-                    .then(() => {
-                        const formContainer = document.querySelector('.rsvp-form-container');
+        // Send to FormSpark
+        fetch(`https://submit-form.com/${formSparkFormId}`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+            .then(() => {
+                const formContainer = document.querySelector('.rsvp-form-container');
+                const attendanceValue = rsvpForm.querySelector('input[name="attendance"]:checked')?.value;
+                const isAttending = attendanceValue === 'Joyfully Accept';
 
-                        // Animate form out
-                        rsvpForm.style.transform = 'scale(0.95)';
-                        rsvpForm.style.opacity = '0';
+                // Animate form out
+                rsvpForm.style.transform = 'scale(0.95)';
+                rsvpForm.style.opacity = '0';
 
-                        setTimeout(() => {
-                            formContainer.innerHTML = `
-                                <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
-                                    <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
-                                    <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
-                                    <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                                        We've received your RSVP and can't wait to celebrate with you!<br>
-                                        We'll be in touch soon.
-                                    </p>
-                                    <div style="margin-top: 30px;">
-                                        <span style="font-size: 48px;">💕</span>
+                setTimeout(() => {
+                    if (isAttending) {
+                        formContainer.innerHTML = `
+                                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                                            We've received your RSVP and can't wait to celebrate with you!<br>
+                                            We'll be in touch soon.
+                                        </p>
+                                        <div style="margin-top: 30px;">
+                                            <span style="font-size: 48px;">💕</span>
+                                        </div>
                                     </div>
-                                </div>
-                            `;
-
-                            // Trigger confetti
-                            createConfetti();
-                        }, 300);
-                    })
-                    .catch((error) => {
-                        console.error('EmailJS Error:', error);
-                        alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
-                        submitBtn.textContent = originalText;
-                        submitBtn.disabled = false;
-                    });
-            } catch (error) {
-                console.error('EmailJS not available:', error);
+                                `;
+                        // Trigger confetti for attending guests
+                        createConfetti();
+                    } else {
+                        formContainer.innerHTML = `
+                                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
+                                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
+                                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
+                                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
+                                            We've received your response and understand you won't be able to join us.<br>
+                                            You'll be missed on our special day.
+                                        </p>
+                                        <div style="margin-top: 30px;">
+                                            <span style="font-size: 48px;">🤍</span>
+                                        </div>
+                                    </div>
+                                `;
+                    }
+                }, 300);
+            })
+            .catch((error) => {
+                console.error('FormSpark Error:', error);
+                alert('Sorry, there was an error sending your RSVP. Please try again or contact us directly.');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
-            }
-        } else {
-            // Fallback: just show the success message without sending email
-            const formContainer = document.querySelector('.rsvp-form-container');
-
-            rsvpForm.style.transform = 'scale(0.95)';
-            rsvpForm.style.opacity = '0';
-
-            setTimeout(() => {
-                formContainer.innerHTML = `
-                    <div style="text-align: center; padding: 60px 20px; animation: scaleIn 0.6s ease-out;">
-                        <div style="font-size: 64px; margin-bottom: 20px;">✓</div>
-                        <h3 style="font-size: 32px; color: var(--gold); margin-bottom: 15px; font-family: 'Great Vibes', cursive;">Thank You!</h3>
-                        <p style="font-size: 18px; color: var(--text-light); line-height: 1.8;">
-                            We've received your RSVP and can't wait to celebrate with you!<br>
-                            (Email sending is not configured yet.)
-                        </p>
-                        <div style="margin-top: 30px;">
-                            <span style="font-size: 48px;">💕</span>
-                        </div>
-                    </div>
-                `;
-
-                createConfetti();
-            }, 300);
-        }
+            });
     });
 }
 
