@@ -645,7 +645,7 @@ function prefillRsvpFromUrl() {
     const nameFromUrl = params.get('name');
 
     const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
-    const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
+    const guestCountSelect = rsvpForm.querySelector('select[name="guest_count"]');
 
     // Try to get guest data from database
     if (nameFromUrl) {
@@ -657,12 +657,19 @@ function prefillRsvpFromUrl() {
                 nameInput.value = guestData.name;
                 nameInput.readOnly = true;
             }
-            if (guestCountInput) {
-                // Always use guest count from database - ignore URL parameters
-                guestCountInput.value = guestData.guestCount;
-                guestCountInput.readOnly = true;
+            if (guestCountSelect) {
+                // Populate dropdown with allowed guest counts (from max down to 1)
+                guestCountSelect.innerHTML = '';
+                for (let i = guestData.guestCount; i >= 1; i--) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = i;
+                    guestCountSelect.appendChild(option);
+                }
+                guestCountSelect.value = guestData.guestCount;
+                guestCountSelect.disabled = false;
                 // Store the valid guest count for validation
-                guestCountInput.dataset.validCount = guestData.guestCount;
+                guestCountSelect.dataset.validCount = guestData.guestCount;
             }
         } else {
             // Guest not in database - block the form
@@ -758,8 +765,8 @@ if (rsvpForm) {
         // Get the guest name from the form
         const nameInput = rsvpForm.querySelector('input[name="guest_name"]');
         const enteredName = nameInput?.value?.trim();
-        const guestCountInput = rsvpForm.querySelector('input[name="guest_count"]');
-        const enteredGuestCount = guestCountInput?.value;
+        const guestCountSelect = rsvpForm.querySelector('select[name="guest_count"]');
+        const enteredGuestCount = guestCountSelect?.value;
 
         // Validate that the entered name is in the guest database
         if (enteredName) {

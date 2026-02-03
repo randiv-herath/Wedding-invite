@@ -15,7 +15,7 @@ const guestDatabase = {
     },
 
     'Luqman Deane': {
-        guestCount: 1,
+        guestCount: 4,
         invitedTo: 'both'
     },
     'Dinith Ranmuthugala': {
