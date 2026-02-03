@@ -210,7 +210,7 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
-    'Ishan Uditha': {
+    'Uditha Silva': {
         guestCount: 1,
         invitedTo: 'reception'
     },
