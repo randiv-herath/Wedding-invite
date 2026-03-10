@@ -266,6 +266,10 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
+    'Mrs. Deepthi Kumarasinghe': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
     'Mrs. Sajeevanie Bandara': {
         guestCount: 1,
         invitedTo: 'reception'
