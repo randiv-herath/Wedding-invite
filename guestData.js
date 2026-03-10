@@ -245,6 +245,62 @@ const guestDatabase = {
     'Vihara Weerasooriya': {
         guestCount: 1,
         invitedTo: 'both'
+    },
+    'Mrs. Yoshini Kalubowilage': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Mrs. Sajeevanie Bandara': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Mrs. Jayani Chathurika': {
+        guestCount: 2,
+        invitedTo: 'reception'
+    },
+    'Mr. Resil Herath': {
+        guestCount: 2,
+        invitedTo: 'both'
+    },
+    'Athula Ayya & Family': {
+        guestCount: 4,
+        invitedTo: 'both'
+    },
+    'Podi Ayya & Family': {
+        guestCount: 5,
+        invitedTo: 'both'
+    },
+    'Loku Ayya & Family': {
+        guestCount: 3,
+        invitedTo: 'both'
+    },
+    'Mr. Nishantha & Family': {
+        guestCount: 3,
+        invitedTo: 'reception'
+    },
+    'Mr. Subasinghe & Family': {
+        guestCount: 4,
+        invitedTo: 'reception'
+    },
+    'Mr. Thushara': {
+        guestCount: 2,
+        invitedTo: 'reception'
+    },
+    'Miss. Nethulaya': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Miss. Sethuli': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Mr. & Mrs. Ajantha': {
+        guestCount: 2,
+        invitedTo: 'reception'
+    },
+    'Mr. Dhanuka & Family': {
+        guestCount: 3,
+        invitedTo: 'both'
     }
 
 };
