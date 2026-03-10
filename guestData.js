@@ -15,8 +15,20 @@ const guestDatabase = {
     },
 
     'Luqman Deane': {
-        guestCount: 4,
+        guestCount: 1,
         invitedTo: 'both'
+    },
+    'Amanee Shafeel': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Ruqyyaha Deane': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Shabira Deane': {
+        guestCount: 1,
+        invitedTo: 'reception'
     },
     'Dinith Ranmuthugala': {
         guestCount: 1,
@@ -139,6 +151,10 @@ const guestDatabase = {
         invitedTo: 'reception'
     },
     'Heshani Gunawardena': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Shannine Philips': {
         guestCount: 1,
         invitedTo: 'reception'
     },
@@ -301,7 +317,15 @@ const guestDatabase = {
     'Mr. Dhanuka & Family': {
         guestCount: 3,
         invitedTo: 'both'
-    }
+    },
+    'Chamindu Alwis': {
+        guestCount: 1,
+        invitedTo: 'both'
+    },
+    'Surosh De Silva': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
 
 };
 
