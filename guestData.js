@@ -345,6 +345,10 @@ const guestDatabase = {
     'Mr. Duminda Hulangamuwa': {
         guestCount: 1,
         invitedTo: 'reception'
+    },
+    'Shanindri Gunasekera': {
+        guestCount: 1,
+        invitedTo: 'both'
     }
 };
 
