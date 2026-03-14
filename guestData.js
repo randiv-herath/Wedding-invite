@@ -278,7 +278,7 @@ const guestDatabase = {
         guestCount: 2,
         invitedTo: 'reception'
     },
-    'Mr. Resil Herath': {
+    'Resil & Kawya': {
         guestCount: 2,
         invitedTo: 'both'
     },
