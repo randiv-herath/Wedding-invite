@@ -275,7 +275,7 @@ const guestDatabase = {
         invitedTo: 'reception'
     },
     'Mrs. Jayani Chathurika': {
-        guestCount: 2,
+        guestCount: 1,
         invitedTo: 'reception'
     },
     'Resil & Kawya': {
@@ -314,7 +314,7 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
-    'Mr. & Mrs. Ajantha': {
+    'Mr. Ajantha & Mrs. Priyani': {
         guestCount: 2,
         invitedTo: 'reception'
     },
@@ -325,10 +325,6 @@ const guestDatabase = {
     'Chamindu Alwis': {
         guestCount: 1,
         invitedTo: 'both'
-    },
-    'Surosh De Silva': {
-        guestCount: 1,
-        invitedTo: 'reception'
     },
     'Surosh De Silva': {
         guestCount: 1,
@@ -349,7 +345,11 @@ const guestDatabase = {
     'Shalindri Gunasekera': {
         guestCount: 1,
         invitedTo: 'both'
-    }
+    },
+    'Mr. Chitral Perera': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
 };
 
 // Helper function to get guest data by name
