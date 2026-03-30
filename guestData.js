@@ -126,6 +126,10 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'both'
     },
+    'Ashan Pansilu': {
+        guestCount: 1,
+        invitedTo: 'both'
+    },
     'Manuli Kalutharaarachchi': {
         guestCount: 1,
         invitedTo: 'both'
