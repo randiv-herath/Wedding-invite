@@ -418,6 +418,22 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
+    'Nayana Nangi': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Saroja Akka & Jaliya Ayya': {
+        guestCount: 2,
+        invitedTo: 'reception'
+    },
+    'Sensei R.J. Edward': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Dr. Chandana': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
 };
 
 // Helper function to get guest data by name
