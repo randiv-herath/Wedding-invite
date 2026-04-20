@@ -22,6 +22,10 @@ const guestDatabase = {
         guestCount: 1,
         invitedTo: 'reception'
     },
+    'Kushan Abeysinghe': {
+        guestCount: 1,
+        invitedTo: 'both'
+    },
     'Ruqyyaha Deane': {
         guestCount: 1,
         invitedTo: 'reception'
@@ -239,6 +243,18 @@ const guestDatabase = {
         invitedTo: 'reception'
     },
     'Shalintha Thaviru': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Uvindu Saranath': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Steve Stanley': {
+        guestCount: 1,
+        invitedTo: 'reception'
+    },
+    'Madhawa Weerasooriya': {
         guestCount: 1,
         invitedTo: 'reception'
     },
