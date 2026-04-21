@@ -248,15 +248,15 @@ const guestDatabase = {
     },
     'Uvindu Saranath': {
         guestCount: 1,
-        invitedTo: 'reception'
+        invitedTo: 'both'
     },
     'Steve Stanley': {
         guestCount: 1,
-        invitedTo: 'reception'
+        invitedTo: 'both'
     },
     'Madhawa Weerasooriya': {
         guestCount: 1,
-        invitedTo: 'reception'
+        invitedTo: 'both'
     },
     'Chamath Wikramasinghe': {
         guestCount: 1,
